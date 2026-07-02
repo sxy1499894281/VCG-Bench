@@ -1,6 +1,6 @@
 <div align="center">
 
-# VCG-Bench
+<img src="assets/vcg-bench-logo.svg" width="520" alt="VCG-Bench Logo">
 
 **A unified visual-centric benchmark for structured diagram generation and editing.**
 
@@ -13,12 +13,23 @@
 [Data Card](DATA.md) |
 [Citation](#citation)
 
+<br>
+<img src="assets/figures/teaser_symbol_logic.png" width="860" alt="Diagram-as-pixels versus diagram-as-code comparison">
+
 </div>
 
 VCG-Bench evaluates whether vision-language models can turn professional diagrams into executable, editable `mxGraph` XML and then edit that XML under natural-language instructions. It focuses on the diagram-as-code setting used by Draw.io / diagrams.net: outputs must be structurally valid, renderable, visually faithful, and practical to edit.
 
+## Framework
+
 <div align="center">
 <img src="assets/figures/framework_official.png" width="820" alt="VCG-Bench framework overview">
+</div>
+
+VCG-Bench unifies two workflows: vision-to-XML reconstruction from diagram images, and instruction-based XML editing through deterministic patch application.
+
+<div align="center">
+<img src="assets/figures/data_pipeline_readme.png" width="820" alt="VCG-Bench data construction pipeline">
 </div>
 
 ## What This Repository Contains

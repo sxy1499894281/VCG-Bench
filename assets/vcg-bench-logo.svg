@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="220" viewBox="0 0 980 220" role="img" aria-labelledby="title desc">
+  <title id="title">VCG-Bench Logo</title>
+  <desc id="desc">VCG-Bench wordmark with diagram nodes and structured code motif.</desc>
+  <rect width="980" height="220" rx="28" fill="#f7f8fb"/>
+  <g transform="translate(54 42)">
+    <rect x="0" y="24" width="72" height="52" rx="12" fill="#ffffff" stroke="#2f6fed" stroke-width="5"/>
+    <rect x="132" y="0" width="82" height="58" rx="14" fill="#ffffff" stroke="#1c9a72" stroke-width="5"/>
+    <rect x="132" y="90" width="82" height="58" rx="14" fill="#ffffff" stroke="#d66b2f" stroke-width="5"/>
+    <path d="M74 50 C96 50 106 29 132 29" fill="none" stroke="#263238" stroke-width="5" stroke-linecap="round"/>
+    <path d="M74 50 C97 50 106 119 132 119" fill="none" stroke="#263238" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="36" cy="50" r="10" fill="#2f6fed"/>
+    <circle cx="173" cy="29" r="10" fill="#1c9a72"/>
+    <circle cx="173" cy="119" r="10" fill="#d66b2f"/>
+    <path d="M255 28 h64 M255 58 h92 M255 88 h70 M255 118 h110" stroke="#7c8798" stroke-width="9" stroke-linecap="round"/>
+    <path d="M242 28 l-18 32 18 32 M382 28 l18 32-18 32" fill="none" stroke="#2f6fed" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="500" y="92" fill="#111827" font-family="Inter, Arial, Helvetica, sans-serif" font-size="58" font-weight="800">VCG-Bench</text>
+  <text x="502" y="140" fill="#4b5563" font-family="Inter, Arial, Helvetica, sans-serif" font-size="25" font-weight="500">Visual-Centric Structured Generation &amp; Editing</text>
+</svg>
