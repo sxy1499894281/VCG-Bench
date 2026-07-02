@@ -156,7 +156,7 @@ The examples below show one-round Codex + skill reconstruction outputs. The left
 Use Python 3.10+.
 
 ```bash
-git clone https://github.com/<your-org-or-user>/VCG-Bench.git
+git clone https://github.com/sxy1499894281/VCG-Bench.git
 cd VCG-Bench
 
 python -m venv .venv
