@@ -8,7 +8,6 @@ import os
 import re
 from pathlib import Path
 from typing import Dict, Any, Optional, List
-import tiktoken
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 from dataclasses import dataclass
@@ -19,6 +18,30 @@ from src.llm.client import LLMClient
 from src.renderer.drawio_renderer import DrawioRenderer
 
 logger = logging.getLogger(__name__)
+
+
+def count_tokens_offline(text: str, tokenizer_name: str = "cl100k_base") -> tuple[int, str]:
+    """
+    Count tokens without making first-run smoke tests depend on tiktoken cache/network.
+
+    By default this uses a stable character-length approximation. Set
+    VCG_USE_TIKTOKEN=1 to enable exact tiktoken counting in environments where
+    the tokenizer files are already available or network access is acceptable.
+    """
+    if os.getenv("VCG_USE_TIKTOKEN", "").lower() in {"1", "true", "yes"}:
+        try:
+            import tiktoken
+
+            tokenizer = tiktoken.get_encoding(tokenizer_name)
+            return len(tokenizer.encode(text)), tokenizer_name
+        except Exception as e:
+            logger.warning(
+                "Failed to load tokenizer %s (%s); using approximate token count",
+                tokenizer_name,
+                e,
+            )
+
+    return max(1, len(text) // 4), "approximate_char_div_4"
 
 
 @dataclass
@@ -135,11 +158,7 @@ class XMLTokenCount(BaseMetric):
     
     def __init__(self, tokenizer_name: str = "cl100k_base"):
         super().__init__("xml_token_count")
-        try:
-            self.tokenizer = tiktoken.get_encoding(tokenizer_name)
-        except Exception as e:
-            logger.warning(f"Failed to load tokenizer {tokenizer_name}: {e}, using fallback")
-            self.tokenizer = None
+        self.tokenizer_name = tokenizer_name
     
     def evaluate(self, xml_path: Path, **kwargs) -> MetricResult:
         """统计XML Token数量"""
@@ -154,19 +173,15 @@ class XMLTokenCount(BaseMetric):
                 )
             
             xml_content = xml_path.read_text(encoding='utf-8')
-            
-            if self.tokenizer:
-                token_count = len(self.tokenizer.encode(xml_content))
-            else:
-                # 简单的回退方法：按字符数估算（粗略）
-                token_count = len(xml_content) // 4
+            token_count, tokenizer_used = count_tokens_offline(xml_content, self.tokenizer_name)
             
             return MetricResult(
                 metric_name=self.name,
                 score=float(token_count),  # Token数量作为分数
                 details={
                     "xml_token_count": token_count,
-                    "xml_length": len(xml_content)
+                    "xml_length": len(xml_content),
+                    "tokenizer": tokenizer_used
                 },
                 success=True
             )

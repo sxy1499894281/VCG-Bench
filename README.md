@@ -95,7 +95,7 @@ See [DATA.md](DATA.md) for the exact schema, domain distribution, and local dire
 
 The companion `drawio-slide-reconstruction` skill packages practical instructions and helper scripts for reconstructing slide-style diagrams into editable Draw.io files with Codex or another coding agent. It is useful both as a reproducible case study for VCG-Bench and as a standalone workflow for diagram reconstruction.
 
-The skill repository is prepared separately as `drawio-slide-reconstruction`. Add the final GitHub link here after the private repository URL is confirmed.
+The companion skill repository is prepared separately as `drawio-slide-reconstruction`. The public GitHub link will be added at release.
 
 ## Reconstruction Cases
 
@@ -125,7 +125,7 @@ The examples below show one-round Codex + skill reconstruction outputs. The left
 Use Python 3.10+.
 
 ```bash
-git clone https://github.com/<your-org>/VCG-Bench.git
+git clone https://github.com/<your-org-or-user>/VCG-Bench.git
 cd VCG-Bench
 
 python -m venv .venv
@@ -289,6 +289,8 @@ VCG-Bench reports execution, visual, and semantic metrics:
 | Token / edit-distance metrics | Task 1 / Task 2 | Lightweight structural and cost diagnostics. |
 
 SCS, CodeVQA, and XDRFR require API credentials for the judge model. SigLIP requires local model setup; see [docs/SIGLIP_SETUP.md](docs/SIGLIP_SETUP.md).
+
+Token-count metrics use a deterministic character-length approximation by default so smoke tests run offline without downloading tokenizer files. Set `VCG_USE_TIKTOKEN=1` to use exact `tiktoken` counting when the tokenizer is available in your environment.
 
 ## Viewers
 

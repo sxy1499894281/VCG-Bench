@@ -459,7 +459,7 @@ from openai import OpenAI
 
 # 连接到本地模型服务（MiniCPM-V-4_5，端口8001）
 client = OpenAI(
-    api_key="ollama",  # 本地服务通常不需要真实的 API key，任意值即可
+    api_key="local-placeholder",  # 本地服务通常不需要真实的 API key，任意值即可
     base_url="http://localhost:8001/v1"
 )
 
@@ -485,7 +485,7 @@ from pathlib import Path
 
 # 连接到本地视觉模型服务
 client = OpenAI(
-    api_key="ollama",
+    api_key="local-placeholder",
     base_url="http://localhost:8001/v1"  # MiniCPM-V-4_5 支持视觉
 )
 
@@ -548,7 +548,7 @@ def get_client(model_key):
     """获取指定模型的客户端"""
     config = MODELS[model_key]
     return OpenAI(
-        api_key="ollama",
+        api_key="local-placeholder",
         base_url=config["base_url"]
     ), config["model_name"]
 
@@ -641,7 +641,7 @@ client = provider.get_client()
 # 测试 MiniCPM-V-4_5 (端口 8001)
 curl http://localhost:8001/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer ollama" \
+  -H "Authorization: Bearer local-placeholder" \
   -d '{
     "model": "OpenBMB/MiniCPM-V-4_5",
     "messages": [
@@ -668,7 +668,7 @@ curl http://localhost:8001/v1/models
 # 这里只是示例，实际使用时需要先编码图片
 curl http://localhost:8001/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer ollama" \
+  -H "Authorization: Bearer local-placeholder" \
   -d '{
     "model": "OpenBMB/MiniCPM-V-4_5",
     "messages": [
@@ -728,7 +728,7 @@ def test_model(model_key: str, prompt: str):
     
     try:
         client = OpenAI(
-            api_key="ollama",
+            api_key="local-placeholder",
             base_url=config["url"]
         )
         

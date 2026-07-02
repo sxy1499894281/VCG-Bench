@@ -504,7 +504,7 @@ from openai import OpenAI
 
 # 连接到本地模型服务
 client = OpenAI(
-    api_key="ollama",  # 本地服务通常不需要真实的 API key
+    api_key="local-placeholder",  # 本地服务通常不需要真实的 API key
     base_url="http://localhost:8001/v1"  # 替换为你的端口
 )
 

@@ -5,7 +5,7 @@
 #   This script will automatically split all domains and run them in parallel (one process per domain)
 #
 # Example:
-#   ./run_task1_data_generation_parallel.sh gpt-5.2 --skip-render --api-key sk-xxx --api-url https://xxx/v1
+#   ./run_task1_data_generation_parallel.sh gpt-5.2 --skip-render --api-key YOUR_API_KEY --api-url https://api.example.com/v1
 
 set -e  # Exit on error
 

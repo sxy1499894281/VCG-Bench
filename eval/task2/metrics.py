@@ -8,7 +8,6 @@ import re
 import os
 from pathlib import Path
 from typing import Dict, Any, Optional, List, Set
-import tiktoken
 import xml.etree.ElementTree as ET
 import time
 
@@ -20,6 +19,30 @@ logger = logging.getLogger(__name__)
 
 # 评估模型配置：优先从环境变量 CUSTOM_VISION_MODEL 读取，否则使用默认值
 EVAL_MODEL = os.getenv('CUSTOM_VISION_MODEL', 'gemini-3-pro-preview')
+
+
+def count_tokens_offline(text: str, tokenizer_name: str = "cl100k_base") -> tuple[int, str]:
+    """
+    Count tokens without making first-run smoke tests depend on tiktoken cache/network.
+
+    By default this uses a stable character-length approximation. Set
+    VCG_USE_TIKTOKEN=1 to enable exact tiktoken counting in environments where
+    the tokenizer files are already available or network access is acceptable.
+    """
+    if os.getenv("VCG_USE_TIKTOKEN", "").lower() in {"1", "true", "yes"}:
+        try:
+            import tiktoken
+
+            tokenizer = tiktoken.get_encoding(tokenizer_name)
+            return len(tokenizer.encode(text)), tokenizer_name
+        except Exception as e:
+            logger.warning(
+                "Failed to load tokenizer %s (%s); using approximate token count",
+                tokenizer_name,
+                e,
+            )
+
+    return max(1, len(text) // 4), "approximate_char_div_4"
 
 
 class ModifiedXMLExecutionSuccessRate(BaseMetric):
@@ -98,11 +121,7 @@ class ModifiedXMLTokenCount(BaseMetric):
     
     def __init__(self, tokenizer_name: str = "cl100k_base"):
         super().__init__("modified_xml_token_count")
-        try:
-            self.tokenizer = tiktoken.get_encoding(tokenizer_name)
-        except Exception as e:
-            logger.warning(f"Failed to load tokenizer {tokenizer_name}: {e}")
-            self.tokenizer = None
+        self.tokenizer_name = tokenizer_name
     
     def evaluate(self, modified_xml_path: Path, **kwargs) -> MetricResult:
         """统计修改后XML Token数量"""
@@ -117,18 +136,15 @@ class ModifiedXMLTokenCount(BaseMetric):
                 )
             
             xml_content = modified_xml_path.read_text(encoding='utf-8')
-            
-            if self.tokenizer:
-                token_count = len(self.tokenizer.encode(xml_content))
-            else:
-                token_count = len(xml_content) // 4
+            token_count, tokenizer_used = count_tokens_offline(xml_content, self.tokenizer_name)
             
             return MetricResult(
                 metric_name=self.name,
                 score=float(token_count),
                 details={
                     "xml_token_count": token_count,
-                    "xml_length": len(xml_content)
+                    "xml_length": len(xml_content),
+                    "tokenizer": tokenizer_used
                 },
                 success=True
             )
@@ -536,11 +552,7 @@ class ModificationJSONTokenCount(BaseMetric):
     
     def __init__(self, tokenizer_name: str = "cl100k_base"):
         super().__init__("modification_json_token_count")
-        try:
-            self.tokenizer = tiktoken.get_encoding(tokenizer_name)
-        except Exception as e:
-            logger.warning(f"Failed to load tokenizer {tokenizer_name}: {e}")
-            self.tokenizer = None
+        self.tokenizer_name = tokenizer_name
     
     def _get_relative_path(self, path: Path) -> str:
         """
@@ -604,10 +616,7 @@ class ModificationJSONTokenCount(BaseMetric):
             json_str = json.dumps(modification_json, ensure_ascii=False)
             
             # Calculate token count
-            if self.tokenizer:
-                token_count = len(self.tokenizer.encode(json_str))
-            else:
-                token_count = len(json_str) // 4
+            token_count, tokenizer_used = count_tokens_offline(json_str, self.tokenizer_name)
             
             # 转换为相对路径（相对于包含task2_benchmark的目录）
             json_path_rel = self._get_relative_path(model_output_json_path)
@@ -618,7 +627,8 @@ class ModificationJSONTokenCount(BaseMetric):
                 details={
                     "token_count": token_count,
                     "json_length": len(json_str),
-                    "json_path": json_path_rel
+                    "json_path": json_path_rel,
+                    "tokenizer": tokenizer_used
                 },
                 success=True
             )
