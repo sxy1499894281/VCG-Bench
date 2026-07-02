@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VCG-Bench</title>
+  <meta name="description" content="VCG-Bench: synthetic data and evaluation pipeline for visual-centric structured diagram generation and editing.">
+  <style>
+    :root {
+      --ink: #17202c;
+      --muted: #5d6878;
+      --line: #dfe5ed;
+      --paper: #ffffff;
+      --soft: #f5f7fa;
+      --blue: #2563eb;
+      --green: #159a7a;
+      --amber: #b7791f;
+      --red: #b91c1c;
+      --shadow: 0 16px 45px rgba(23, 32, 44, 0.12);
+      color-scheme: light;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, #f8fafc 0%, #ffffff 26%, #f7fafc 100%);
+      line-height: 1.55;
+    }
+
+    a { color: inherit; }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid rgba(223, 229, 237, 0.86);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      min-height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .mark {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      background: #ffffff;
+    }
+
+    .mark svg { width: 19px; height: 19px; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav-links a:hover { color: var(--ink); }
+
+    main {
+      overflow: hidden;
+    }
+
+    .section {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 76px 0;
+    }
+
+    .hero {
+      padding-top: 88px;
+      padding-bottom: 56px;
+      display: grid;
+      grid-template-columns: minmax(0, 0.92fr) minmax(360px, 1.08fr);
+      gap: 42px;
+      align-items: center;
+    }
+
+    .hero > *,
+    .two-col > *,
+    .case > * {
+      min-width: 0;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      color: #0f766e;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 28px;
+      height: 2px;
+      background: #0f766e;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 860px;
+      font-size: clamp(46px, 8vw, 82px);
+      line-height: 0.96;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 24px 0 0;
+      max-width: 720px;
+      color: #3d4755;
+      font-size: clamp(18px, 2.1vw, 23px);
+      line-height: 1.45;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 30px;
+      max-width: 460px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 44px;
+      padding: 0 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      background: #ffffff;
+      color: #17202c;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 1px 0 rgba(23, 32, 44, 0.04);
+    }
+
+    .button.primary {
+      border-color: #1d4ed8;
+      background: #2563eb;
+      color: #ffffff;
+    }
+
+    .button svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+    }
+
+    .hero-media {
+      margin: 0;
+      padding: 10px;
+      min-width: 0;
+      width: 100%;
+      max-width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero-media img {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--line);
+    }
+
+    .stat {
+      padding: 22px;
+      background: #ffffff;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: clamp(28px, 4vw, 40px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .section-title {
+      margin: 0 0 16px;
+      max-width: 850px;
+      font-size: clamp(30px, 4.4vw, 48px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .section-lead {
+      margin: 0 0 32px;
+      max-width: 850px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+      gap: 36px;
+      align-items: center;
+    }
+
+    .panel {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 8px 28px rgba(23, 32, 44, 0.06);
+      overflow: hidden;
+    }
+
+    .panel img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .story-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .story-item {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .story-index {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 7px;
+      background: #e8f5f1;
+      color: #0f766e;
+      font-weight: 800;
+    }
+
+    .story-item h3 {
+      margin: 0 0 4px;
+      font-size: 17px;
+    }
+
+    .story-item p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .band {
+      background: #eef4f8;
+      border-top: 1px solid #dce7ef;
+      border-bottom: 1px solid #dce7ef;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 14px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .case-grid {
+      display: grid;
+      gap: 24px;
+    }
+
+    .case {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--line);
+    }
+
+    .case figure {
+      margin: 0;
+      background: #ffffff;
+    }
+
+    .case img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .case figcaption {
+      padding: 12px 14px;
+      color: var(--muted);
+      font-size: 14px;
+      border-top: 1px solid var(--line);
+      background: #ffffff;
+    }
+
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .resource {
+      display: block;
+      padding: 18px;
+      min-height: 126px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      text-decoration: none;
+    }
+
+    .resource strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 17px;
+    }
+
+    .resource span {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .citation {
+      margin: 0;
+      padding: 20px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #0f172a;
+      color: #e5e7eb;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .site-footer {
+      padding: 36px 0 48px;
+      color: var(--muted);
+      text-align: center;
+      border-top: 1px solid var(--line);
+      background: #ffffff;
+    }
+
+    @media (max-width: 920px) {
+      .nav {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 14px 0;
+      }
+
+      .nav-links {
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .hero,
+      .two-col,
+      .case {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-media,
+      .panel,
+      .case,
+      .panel img,
+      .case img {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .hero-media {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .hero-media img {
+        width: max(100%, 760px);
+        max-width: none;
+      }
+
+      .hero {
+        padding-top: 54px;
+      }
+
+      .stats,
+      .cards,
+      .links-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 580px) {
+      .section {
+        width: min(100% - 24px, 1180px);
+        padding: 54px 0;
+      }
+
+      .hero {
+        padding-top: 42px;
+      }
+
+      .stats,
+      .cards,
+      .links-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        grid-template-columns: 1fr;
+        max-width: none;
+      }
+
+      .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="#">
+        <span class="mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 6h5v5H4z"></path>
+            <path d="M15 4h5v5h-5z"></path>
+            <path d="M15 15h5v5h-5z"></path>
+            <path d="M9 8h2.5a3 3 0 0 1 3 3v0a3 3 0 0 0 3 3H20"></path>
+            <path d="M9 8h2.5a3 3 0 0 0 3-3V4"></path>
+          </svg>
+        </span>
+        VCG-Bench
+      </a>
+      <div class="nav-links">
+        <a href="#framework">Framework</a>
+        <a href="#data">Data</a>
+        <a href="#skill">Skill</a>
+        <a href="#links">Links</a>
+        <a href="#citation">Citation</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="section hero">
+      <div>
+        <div class="eyebrow">Diagram-as-Code Benchmark</div>
+        <h1>VCG-Bench</h1>
+        <p class="subtitle">A synthetic data and evaluation pipeline for visual-centric structured diagram generation and editing with executable, editable Draw.io / mxGraph XML.</p>
+        <div class="actions">
+          <a class="button primary" href="https://arxiv.org/abs/2605.15677">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5V5a2 2 0 0 1 2-2h11"></path><path d="M6 17h13"></path><path d="M6 21h13"></path><path d="M19 3v18"></path></svg>
+            Paper
+          </a>
+          <a class="button" href="https://github.com/sxy1499894281/VCG-Bench">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.4 5.4 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.3-.75 2.05-.68.31-2.4.85-3.45-.98 0 0-.63-1.15-1.82-1.24 0 0-1.16-.02-.08.72 0 0 .78.37 1.32 1.77 0 0 .7 2.14 4.02 1.42V22"></path></svg>
+            Code
+          </a>
+          <a class="button" href="https://huggingface.co/datasets/sxy1620348809/VCG-Bench">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><path d="M3.3 7 12 12l8.7-5"></path><path d="M12 22V12"></path></svg>
+            Dataset
+          </a>
+          <a class="button" href="https://github.com/sxy1499894281/drawio-reconstruction">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.37 3.63a2.12 2.12 0 0 1 3 3L12 16l-4 1 1-4Z"></path></svg>
+            Reconstruction Skill
+          </a>
+        </div>
+      </div>
+      <figure class="hero-media" aria-label="Diagram-as-pixel versus diagram-as-code pipeline">
+        <img src="assets/figures/teaser_symbol_logic.png" alt="Diagram-as-pixel pipeline compared with diagram-as-code pipeline">
+      </figure>
+    </section>
+
+    <section class="section" aria-label="Dataset summary">
+      <div class="stats">
+        <div class="stat"><strong>1,449</strong><span>diagram image samples</span></div>
+        <div class="stat"><strong>6</strong><span>coarse domains</span></div>
+        <div class="stat"><strong>15</strong><span>sub-domains</span></div>
+        <div class="stat"><strong>2</strong><span>generation and editing tasks</span></div>
+      </div>
+    </section>
+
+    <section id="framework" class="section two-col">
+      <div>
+        <span class="chip">Benchmark</span>
+        <h2 class="section-title">From pixels to editable diagram code.</h2>
+        <p class="section-lead">VCG-Bench evaluates whether multimodal models can recover structured Draw.io / mxGraph XML from diagram images, and then edit that XML under natural-language instructions.</p>
+        <div class="story-list">
+          <div class="story-item">
+            <div class="story-index">1</div>
+            <div>
+              <h3>Vision-to-XML generation</h3>
+              <p>Models generate executable mxGraph XML that must parse, render, and preserve the original diagram's layout, text, topology, and style.</p>
+            </div>
+          </div>
+          <div class="story-item">
+            <div class="story-index">2</div>
+            <div>
+              <h3>Instruction-based XML editing</h3>
+              <p>Models predict deterministic XML patches for precise diagram edits, separating visual understanding from code-to-code modification ability.</p>
+            </div>
+          </div>
+          <div class="story-item">
+            <div class="story-index">3</div>
+            <div>
+              <h3>Executable evaluation</h3>
+              <p>Metrics cover renderability, structure, visual style, semantic consistency, and edit preservation instead of relying on text matching alone.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <figure class="panel">
+        <img src="assets/figures/framework_official.png" alt="VCG-Bench framework overview">
+      </figure>
+    </section>
+
+    <section id="data" class="band">
+      <div class="section">
+        <h2 class="section-title">A synthetic data engine for model cold-start.</h2>
+        <p class="section-lead">The released Task 1 dataset provides diagram images, domain labels, structured descriptions, and restored mxGraph XML. The pipeline is designed to create verified visual-code pairs that can bootstrap open-source diagram-to-code models.</p>
+        <figure class="panel">
+          <img src="assets/figures/data_pipeline.png" alt="VCG-Bench synthetic data construction pipeline">
+        </figure>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">What the release contains.</h2>
+      <p class="section-lead">The project separates benchmark construction, runnable code, released data, and agent-assisted reconstruction workflows.</p>
+      <div class="cards">
+        <article class="card">
+          <span class="chip">Code</span>
+          <h3>VCG-Bench</h3>
+          <p>Generation scripts, evaluation pipelines, prompt templates, examples, and local model helpers for Draw.io / mxGraph workflows.</p>
+        </article>
+        <article class="card">
+          <span class="chip">Data</span>
+          <h3>Hugging Face Dataset</h3>
+          <p>Task 1 parquet release with 1,449 samples across academic, business, software, management, general, and UI/UX domains.</p>
+        </article>
+        <article class="card">
+          <span class="chip">Skill</span>
+          <h3>Draw.io Reconstruction</h3>
+          <p>A Codex skill for high-fidelity diagram reconstruction into editable Draw.io files with visual audits and multi-turn refinement.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="skill" class="section">
+      <h2 class="section-title">High-fidelity reconstruction with Codex.</h2>
+      <p class="section-lead">VCG-Bench provides data and evaluation. For production-quality reconstruction of complex diagrams, the companion drawio-reconstruction skill supports agent-in-the-loop editing: inspect the reference, rebuild editable structure, export a preview, and refine defects through conversation.</p>
+      <div class="case-grid">
+        <div class="case">
+          <figure>
+            <img src="assets/cases/data_lake_original.png" alt="Original data lake diagram">
+            <figcaption>Original reference image</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/cases/data_lake_drawio.png" alt="Reconstructed data lake Draw.io export">
+            <figcaption>Reconstructed Draw.io export</figcaption>
+          </figure>
+        </div>
+        <div class="case">
+          <figure>
+            <img src="assets/cases/data_man_original.png" alt="Original data management diagram">
+            <figcaption>Original reference image</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/cases/data_man_drawio.png" alt="Reconstructed data management Draw.io export">
+            <figcaption>Reconstructed Draw.io export</figcaption>
+          </figure>
+        </div>
+        <div class="case">
+          <figure>
+            <img src="assets/cases/data_sci2_original.png" alt="Original scientific data diagram">
+            <figcaption>Original reference image</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/cases/data_sci2_drawio.png" alt="Reconstructed scientific data Draw.io export">
+            <figcaption>Reconstructed Draw.io export</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="links" class="band">
+      <div class="section">
+        <h2 class="section-title">Resources.</h2>
+        <p class="section-lead">Use the homepage as the single entry point in the paper, while the individual resources remain directly accessible.</p>
+        <div class="links-grid">
+          <a class="resource" href="https://arxiv.org/abs/2605.15677">
+            <strong>Paper</strong>
+            <span>VCG-Bench: Towards A Unified Visual-Centric Benchmark for Structured Generation and Editing.</span>
+          </a>
+          <a class="resource" href="https://github.com/sxy1499894281/VCG-Bench">
+            <strong>Project Code</strong>
+            <span>Data synthesis, benchmark evaluation, examples, and setup documentation.</span>
+          </a>
+          <a class="resource" href="https://huggingface.co/datasets/sxy1620348809/VCG-Bench">
+            <strong>Dataset</strong>
+            <span>Released Task 1 data card and parquet files on Hugging Face.</span>
+          </a>
+          <a class="resource" href="https://github.com/sxy1499894281/drawio-reconstruction">
+            <strong>Reconstruction Skill</strong>
+            <span>Codex workflow for editable high-fidelity Draw.io reconstruction.</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="citation" class="section">
+      <h2 class="section-title">Citation.</h2>
+      <pre class="citation"><code>@misc{su2026vcgbenchunifiedvisualcentricbenchmark,
+      title={VCG-Bench: Towards A Unified Visual-Centric Benchmark for Structured Generation and Editing},
+      author={Xiaoyan Su and Peijie Dong and Zhenheng Tang and Song Tang and Yuyao Zhai and Kaitao Lin and Liang Chen and Gai Yuhang and Yuyu Luo and Qiang Wang and Xiaowen Chu},
+      year={2026},
+      eprint={2605.15677},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2605.15677},
+}</code></pre>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    VCG-Bench is released with MIT-licensed code and CC BY 4.0 data.
+  </footer>
+</body>
+</html>

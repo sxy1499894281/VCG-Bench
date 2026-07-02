@@ -1,3 +1,5 @@
+<div align="center">
+
 # VCG-Bench
 
 **Synthetic data and evaluation pipeline for visual-centric structured diagram generation and editing.**
@@ -6,6 +8,7 @@
 [![Dataset](https://img.shields.io/badge/HuggingFace-VCG--Bench-yellow)](https://huggingface.co/datasets/sxy1620348809/VCG-Bench)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
+[Homepage](https://sxy1499894281.github.io/VCG-Bench/) |
 [Paper](https://arxiv.org/abs/2605.15677) |
 [Dataset](https://huggingface.co/datasets/sxy1620348809/VCG-Bench) |
 [Data Card](DATA.md) |
@@ -13,6 +16,8 @@
 [Citation](#citation)
 
 <img src="assets/figures/teaser_symbol_logic.png" width="860" alt="Diagram-as-pixels versus diagram-as-code comparison">
+
+</div>
 
 VCG-Bench is a synthetic-data construction and evaluation pipeline for the diagram-as-code setting. The goal is to bootstrap open-source models with image-to-`mxGraph` data and instruction-editing examples, then evaluate whether they can produce executable, editable Draw.io / diagrams.net diagrams.
 
