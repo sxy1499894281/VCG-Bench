@@ -9,13 +9,14 @@
 [Paper](https://arxiv.org/abs/2605.15677) |
 [Dataset](https://huggingface.co/datasets/sxy1620348809/VCG-Bench) |
 [Data Card](DATA.md) |
+[Reconstruction Skill](https://github.com/sxy1499894281/drawio-reconstruction) |
 [Citation](#citation)
 
 <img src="assets/figures/teaser_symbol_logic.png" width="860" alt="Diagram-as-pixels versus diagram-as-code comparison">
 
 VCG-Bench is a synthetic-data construction and evaluation pipeline for the diagram-as-code setting. The goal is to bootstrap open-source models with image-to-`mxGraph` data and instruction-editing examples, then evaluate whether they can produce executable, editable Draw.io / diagrams.net diagrams.
 
-The benchmark is designed around one practical observation: high-quality diagram reconstruction is not only a model-output problem. Dataset synthesis can provide cold-start supervision and evaluation signals, while interactive agent workflows such as the companion `drawio-slide-reconstruction` skill are better suited for production-quality reconstruction, visual inspection, and multi-step refinement with Codex.
+The benchmark is designed around one practical observation: high-quality diagram reconstruction is not only a model-output problem. Dataset synthesis can provide cold-start supervision and evaluation signals, while interactive agent workflows such as the companion [`drawio-reconstruction`](https://github.com/sxy1499894281/drawio-reconstruction) skill are better suited for production-quality reconstruction, visual inspection, and multi-step refinement with Codex.
 
 ## Framework
 
@@ -38,7 +39,7 @@ The data pipeline follows a machine-generation plus validation loop: collect can
 
 ## Skill-Based High-Fidelity Reconstruction
 
-VCG-Bench is the benchmark and synthetic data engine. For high-quality one-off reconstruction of complex slides, posters, architecture diagrams, or research figures, use the companion `drawio-slide-reconstruction` skill with Codex. The skill turns a reference image into an editable `.drawio` file and exported PNG preview, then lets you keep improving it conversationally:
+VCG-Bench is the benchmark and synthetic data engine. For high-quality one-off reconstruction of complex diagrams, slides, posters, architecture diagrams, UI screenshots, or research figures, use the companion [`drawio-reconstruction`](https://github.com/sxy1499894281/drawio-reconstruction) skill with Codex. The skill turns a reference image into an editable `.drawio` file and exported PNG preview, then lets you keep improving it conversationally:
 
 - ask Codex to fix missing icons, crop seams, alignment drift, bad arrow paths, or text size issues;
 - ask for larger fonts, cleaner spacing, or a more presentation-ready layout;
@@ -118,9 +119,9 @@ See [DATA.md](DATA.md) for the exact schema, domain distribution, and local dire
 
 ## Companion Skill
 
-The companion `drawio-slide-reconstruction` skill packages practical instructions and helper scripts for reconstructing slide-style diagrams into editable Draw.io files with Codex or another coding agent. It is useful both as a reproducible case study for VCG-Bench and as a standalone workflow for diagram reconstruction.
+The companion [`drawio-reconstruction`](https://github.com/sxy1499894281/drawio-reconstruction) skill packages practical instructions and helper scripts for reconstructing reference diagram images into editable Draw.io files with Codex or another coding agent. It is useful both as a reproducible case study for VCG-Bench and as a standalone workflow for diagram reconstruction.
 
-The companion skill repository is prepared separately as `drawio-slide-reconstruction`. The public GitHub link will be added at release.
+The companion skill repository is released separately at https://github.com/sxy1499894281/drawio-reconstruction.
 
 ## Reconstruction Cases
 
