@@ -1,7 +1,5 @@
 # VCG-Bench
 
-<div align="center">
-
 **Synthetic data and evaluation pipeline for visual-centric structured diagram generation and editing.**
 
 [![arXiv](https://img.shields.io/badge/arXiv-2605.15677-b31b1b)](https://arxiv.org/abs/2605.15677)
@@ -13,10 +11,7 @@
 [Data Card](DATA.md) |
 [Citation](#citation)
 
-<br>
 <img src="assets/figures/teaser_symbol_logic.png" width="860" alt="Diagram-as-pixels versus diagram-as-code comparison">
-
-</div>
 
 VCG-Bench is a synthetic-data construction and evaluation pipeline for the diagram-as-code setting. The goal is to bootstrap open-source models with image-to-`mxGraph` data and instruction-editing examples, then evaluate whether they can produce executable, editable Draw.io / diagrams.net diagrams.
 
