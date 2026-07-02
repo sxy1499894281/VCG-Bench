@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use VCG-Bench, please cite the paper and this repository."
+title: "VCG-Bench: Towards A Unified Visual-Centric Benchmark for Structured Generation and Editing"
+authors:
+  - family-names: Su
+    given-names: Xiaoyan
+  - family-names: Dong
+    given-names: Peijie
+  - family-names: Tang
+    given-names: Zhenheng
+  - family-names: Tang
+    given-names: Song
+  - family-names: Zhai
+    given-names: Yuyao
+  - family-names: Lin
+    given-names: Kaitao
+  - family-names: Chen
+    given-names: Liang
+  - family-names: Gai
+    given-names: Yuhang
+  - family-names: Luo
+    given-names: Yuyu
+  - family-names: Wang
+    given-names: Qiang
+  - family-names: Chu
+    given-names: Xiaowen
+date-released: 2026-05-26
+license: MIT

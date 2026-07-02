@@ -1,0 +1,1 @@
+Keep the diagram unchanged. This no-op instruction is used only to verify the Task 2 evaluation pipeline.

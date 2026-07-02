@@ -1,0 +1,303 @@
+{
+  "image_type": "Gantt Chart / Presentation Template",
+  "overview": "A monthly project management Gantt chart slide titled 'Work Arrangement'. It visualizes a 4-week timeline for six key project phases, from market research to event execution, and includes a footer section listing involved departments.",
+  "components": [
+    {
+      "name": "Slide Title",
+      "count": 1,
+      "description": "Main title text at the top left: '工作汇报-月度甘特图 Powerpoint Template'.",
+      "text_content": "工作汇报-月度甘特图 Powerpoint Template"
+    },
+    {
+      "name": "Slide Subtitle",
+      "count": 1,
+      "description": "Subtitle text at the top right: 'Work Arrangement'.",
+      "text_content": "Work Arrangement"
+    },
+    {
+      "name": "Chart Header Row 1 (Days)",
+      "count": 1,
+      "description": "Dark blue header row listing days of the week (M, T, W, T, F, S, S) repeated 4 times.",
+      "text_content": "M T W T F S S M T W T F S S M T W T F S S M T W T F S S"
+    },
+    {
+      "name": "Chart Header Row 2 (Weeks)",
+      "count": 1,
+      "description": "Light blue header row grouping days into weeks.",
+      "text_content": "任务 # | 第一周 | 第二周 | 第三周 | 第四周"
+    },
+    {
+      "name": "Task Label Column",
+      "count": 6,
+      "description": "List of 6 tasks on the left side.",
+      "text_content": [
+        "市场调研和主题确定",
+        "活动内容和亮点设计",
+        "场地选择和布置规划",
+        "营销和推广计划",
+        "参与者注册和管理",
+        "活动执行和现场管理"
+      ]
+    },
+    {
+      "name": "Gantt Bar 1",
+      "count": 1,
+      "description": "Dark blue bar spanning the first week.",
+      "text_content": "进行市场调研，了解目标受众的兴趣和喜好。"
+    },
+    {
+      "name": "Gantt Bar 2",
+      "count": 1,
+      "description": "Gray bar overlapping the end of week 1 and start of week 2.",
+      "text_content": "创意策划团队合作。"
+    },
+    {
+      "name": "Gantt Bar 3",
+      "count": 1,
+      "description": "Dark blue bar in week 2 and 3.",
+      "text_content": "研究并选择适合的活动场地。"
+    },
+    {
+      "name": "Gantt Bar 4",
+      "count": 1,
+      "description": "Gray bar in week 3.",
+      "text_content": "制定全面的营销和推广策略。"
+    },
+    {
+      "name": "Gantt Bar 5",
+      "count": 1,
+      "description": "Dark blue bar spanning week 3 and 4.",
+      "text_content": "设计在线注册系统，便于参与者报名和信息收集。"
+    },
+    {
+      "name": "Gantt Bar 6",
+      "count": 1,
+      "description": "Gray bar at the end of week 4.",
+      "text_content": "管理现场执行团队。"
+    },
+    {
+      "name": "Footer Container",
+      "count": 1,
+      "description": "A white box with a blue border at the bottom containing text and icons."
+    },
+    {
+      "name": "Footer Title",
+      "count": 1,
+      "description": "Title inside the footer box.",
+      "text_content": "月度项目进度流程安排"
+    },
+    {
+      "name": "Footer Description",
+      "count": 1,
+      "description": "Paragraph text describing the importance of teamwork.",
+      "text_content": "在这个充满挑战和机遇的时代，我们深知每个部门的协作至关重要。只有通过跨部门的通力合作，我们才能实现更大的成功和成就。作为团队的一员，您的角色至关重要。"
+    },
+    {
+      "name": "Department Icons",
+      "count": 6,
+      "description": "Circular icons representing different departments.",
+      "text_content": [
+        "策划部 (Planning Dept)",
+        "设计部 (Design Dept)",
+        "采购部 (Purchasing Dept)",
+        "销售部 (Sales Dept)",
+        "商务部 (Business Dept)",
+        "工程部 (Engineering Dept)"
+      ]
+    }
+  ],
+  "spatial_layout": {
+    "primary_layout": "Vertically stacked: Title Header -> Gantt Chart Grid -> Footer Info Box.",
+    "relative_positions": [
+      "The Gantt chart is the central element.",
+      "Tasks are listed in the leftmost column.",
+      "Time progresses from left to right across columns.",
+      "The footer is divided into a text section on the left and an icon grid on the right."
+    ],
+    "alignment": [
+      "Task labels are left-aligned.",
+      "Gantt bars are horizontally aligned with their respective task rows.",
+      "Footer icons are arranged in a 2x3 grid."
+    ]
+  },
+  "flow_and_topology": {
+    "primary_flow": "Time-based linear flow from Left (Week 1) to Right (Week 4).",
+    "structures": [
+      "Topology: Timeline. Tasks are sequential but with overlapping durations.",
+      "Topology: Grid. The intersection of Rows (Tasks) and Columns (Time) defines the position of the Gantt bars."
+    ]
+  },
+  "structural_patterns": [
+    "Alternating row colors (white/light blue) in the grid.",
+    "Alternating bar colors (Dark Blue/Gray) for visual distinction.",
+    "Repetitive column headers (M, T, W, T, F, S, S)."
+  ],
+  "non_diagram_elements": [
+    {
+      "category": "icon",
+      "count": 6,
+      "examples": [
+        "Shopping Basket Icon",
+        "Water Drop Icon",
+        "Storefront Icon",
+        "Suitcase Icon",
+        "Folder Icon",
+        "Layers Icon"
+      ]
+    }
+  ],
+  "arrows": {
+    "summary": {
+      "total": 0,
+      "bidirectional": 0,
+      "styles": [],
+      "multi_edge_pairs": 0
+    },
+    "details": []
+  },
+  "color_palette": {
+    "colors": [
+      {
+        "name": "Dark Blue",
+        "hex": "#004080",
+        "proportion": 0.4
+      },
+      {
+        "name": "Light Blue",
+        "hex": "#E6F0FA",
+        "proportion": 0.3
+      },
+      {
+        "name": "Gray",
+        "hex": "#999999",
+        "proportion": 0.1
+      },
+      {
+        "name": "Yellow",
+        "hex": "#F2C046",
+        "proportion": 0.05
+      }
+    ]
+  },
+  "component_styles": [
+    {
+      "component": "Gantt Bar (Blue)",
+      "shape": "rectangle",
+      "fill": "#004080",
+      "stroke": "none",
+      "text": "#FFFFFF",
+      "is_background": false
+    },
+    {
+      "component": "Gantt Bar (Gray)",
+      "shape": "rectangle",
+      "fill": "#999999",
+      "stroke": "none",
+      "text": "#FFFFFF",
+      "is_background": false
+    },
+    {
+      "component": "Footer Box",
+      "shape": "rectangle",
+      "fill": "none",
+      "stroke": "#004080",
+      "thickness": "medium",
+      "is_background": true
+    }
+  ],
+  "containment_hierarchy": {
+    "root": {
+      "name": "Slide Canvas",
+      "children": [
+        {
+          "name": "Header Section",
+          "children": [
+            "Slide Title",
+            "Slide Subtitle"
+          ]
+        },
+        {
+          "name": "Gantt Chart Table",
+          "children": [
+            "Chart Header Row 1",
+            "Chart Header Row 2",
+            "Task Label Column",
+            "Gantt Bar 1",
+            "Gantt Bar 2",
+            "Gantt Bar 3",
+            "Gantt Bar 4",
+            "Gantt Bar 5",
+            "Gantt Bar 6"
+          ]
+        },
+        {
+          "name": "Footer Section",
+          "children": [
+            "Footer Title",
+            "Footer Description",
+            "Department Icons"
+          ]
+        }
+      ]
+    }
+  },
+  "relationships_extended": [
+    {
+      "type": "layout_detail",
+      "source": "Gantt Bar 1",
+      "target": "Task Label Column",
+      "note": "Aligned with '市场调研和主题确定' row, spans Week 1."
+    },
+    {
+      "type": "layout_detail",
+      "source": "Gantt Bar 2",
+      "target": "Task Label Column",
+      "note": "Aligned with '活动内容和亮点设计' row, spans end of Week 1 to start of Week 2."
+    },
+    {
+      "type": "layout_detail",
+      "source": "Gantt Bar 3",
+      "target": "Task Label Column",
+      "note": "Aligned with '场地选择和布置规划' row, spans mid Week 2 to mid Week 3."
+    },
+    {
+      "type": "layout_detail",
+      "source": "Gantt Bar 4",
+      "target": "Task Label Column",
+      "note": "Aligned with '营销和推广计划' row, spans end of Week 2 to end of Week 3."
+    },
+    {
+      "type": "layout_detail",
+      "source": "Gantt Bar 5",
+      "target": "Task Label Column",
+      "note": "Aligned with '参与者注册和管理' row, spans Week 3 to Week 4."
+    },
+    {
+      "type": "layout_detail",
+      "source": "Gantt Bar 6",
+      "target": "Task Label Column",
+      "note": "Aligned with '活动执行和现场管理' row, spans end of Week 4."
+    }
+  ],
+  "panel_layout": {
+    "panels": 1,
+    "layout": "single",
+    "labels": []
+  },
+  "typography": {
+    "monospace_used": false,
+    "bold_italic_used": false
+  },
+  "legend_and_symbols": {
+    "has_legend": true,
+    "items": [
+      "Blue Bars: Primary tasks",
+      "Gray Bars: Secondary/Collaborative tasks",
+      "Icons: Represent departments (Planning, Design, Purchasing, Sales, Business, Engineering)"
+    ]
+  },
+  "background_layers": {
+    "has_raster_background": false,
+    "z_order_notes": "Grid lines are behind the bars."
+  }
+}

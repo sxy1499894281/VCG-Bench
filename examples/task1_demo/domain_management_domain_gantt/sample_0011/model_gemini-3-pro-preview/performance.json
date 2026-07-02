@@ -1,0 +1,31 @@
+{
+  "model": "gemini-3-pro-preview",
+  "sample": "sample_0011",
+  "status": "success",
+  "token_usage": {
+    "description": {
+      "prompt_tokens": 8276,
+      "completion_tokens": 5015,
+      "total_tokens": 13291,
+      "model": "gemini-3-pro-preview",
+      "provider": "custom"
+    },
+    "xml": {
+      "prompt_tokens": 8880,
+      "completion_tokens": 12965,
+      "total_tokens": 21845,
+      "model": "gemini-3-pro-preview",
+      "provider": "custom"
+    },
+    "total_prompt_tokens": 17156,
+    "total_completion_tokens": 17980,
+    "total_tokens": 35136
+  },
+  "timing": {
+    "description_time_seconds": 62.31942963600159,
+    "xml_time_seconds": 733.8129615783691,
+    "render_time_seconds": 9.298324584960938e-05,
+    "total_time_seconds": 733.8134863376617
+  },
+  "timestamp": "2025-12-31T22:02:31.084538"
+}

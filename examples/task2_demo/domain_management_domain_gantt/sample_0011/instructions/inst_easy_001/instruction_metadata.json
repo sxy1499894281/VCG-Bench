@@ -1,0 +1,6 @@
+{
+  "instruction_id": "inst_easy_001",
+  "difficulty_level": "Easy",
+  "operation_type": "noop",
+  "note": "Minimal no-op instruction for smoke testing."
+}

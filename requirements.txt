@@ -1,0 +1,24 @@
+# VCG-Bench requirements
+# Tested with Python 3.10.
+
+# Core runtime
+openai>=1.0.0
+python-dotenv>=1.0.0
+Pillow>=10.0.0
+numpy>=1.21.0
+pandas>=1.3.0
+scipy>=1.7.0
+tiktoken>=0.5.0
+
+# Dataset loading examples
+datasets>=2.14.0
+
+# Web viewers / screening tools
+flask>=2.0.0
+
+# Optional: SigLIP evaluation and local-model workflows.
+# These packages are large; install only when needed.
+torch>=2.0.0
+transformers>=4.30.0
+huggingface-hub>=0.16.0
+modelscope>=1.9.0

@@ -1,0 +1,27 @@
+{
+  "sample_id": "sample_0011",
+  "domain": "domain_management_domain_gantt",
+  "num_questions": 3,
+  "qa_pairs": [
+    {
+      "question": "How many horizontal bars representing task duration are colored blue in the Gantt chart?",
+      "answer": "3",
+      "question_type": "counting",
+      "visual_anchor": "blue task bars"
+    },
+    {
+      "question": "What is the English text displayed in the top right corner of the header area?",
+      "answer": "Work Arrangement",
+      "question_type": "identification",
+      "visual_anchor": "top right text"
+    },
+    {
+      "question": "In the department list at the bottom right, which department is located immediately to the right of the '策划部' (Planning Department)?",
+      "answer": "设计部",
+      "question_type": "relationship",
+      "visual_anchor": "bottom right icons"
+    }
+  ],
+  "generated_at": "2026-01-02T04:22:30.788546",
+  "generation_model": "gemini-3-pro-preview"
+}

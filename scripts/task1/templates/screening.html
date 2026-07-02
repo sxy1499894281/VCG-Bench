@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片筛选工具</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/screening.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部统计信息栏 -->
+        <div class="header">
+            <div class="statistics">
+                <span class="stat-item">
+                    <span class="stat-label">合格:</span>
+                    <span class="stat-value" id="stat-approved">0</span>
+                </span>
+                <span class="stat-item">
+                    <span class="stat-label">不合格:</span>
+                    <span class="stat-value" id="stat-rejected">0</span>
+                </span>
+                <span class="stat-item">
+                    <span class="stat-label">待定:</span>
+                    <span class="stat-value" id="stat-pending">0</span>
+                </span>
+                <span class="stat-item">
+                    <span class="stat-label">总计:</span>
+                    <span class="stat-value" id="stat-total">0</span>
+                </span>
+            </div>
+            <div class="filter-controls">
+                <div class="model-selector">
+                    <label for="model-select" class="model-label">单模型:</label>
+                    <select id="model-select" class="model-select">
+                        <option value="">加载中...</option>
+                    </select>
+                </div>
+                <div class="multi-model-selector">
+                    <label class="model-label">多模型筛选:</label>
+                    <div class="multi-model-container">
+                        <div class="multi-model-input-group">
+                            <select id="multi-model-add-select" class="model-select-add">
+                                <option value="">选择模型添加到列表...</option>
+                            </select>
+                            <button id="btn-add-model" class="btn-add-model">添加</button>
+                        </div>
+                        <div id="selected-models-list" class="selected-models-list">
+                            <!-- 已选中的模型将显示在这里 -->
+                        </div>
+                        <button id="btn-apply-multi-filter" class="btn-apply-filter">应用筛选</button>
+                        <button id="btn-clear-models" class="btn-clear-models">清空列表</button>
+                    </div>
+                </div>
+                <button id="btn-filter-all" class="btn-filter active">显示全部</button>
+                <button id="btn-filter-unmarked" class="btn-filter">显示未打标</button>
+                <button id="btn-filter-approved" class="btn-filter">显示合格</button>
+                <button id="btn-filter-rejected" class="btn-filter">显示不合格</button>
+            </div>
+        </div>
+
+        <!-- 主要内容区域 -->
+        <div class="main-content">
+            <!-- 导航栏 -->
+            <div class="navigation">
+                <button id="btn-prev" class="btn-nav" title="上一张 (←)">
+                    ← 上一张
+                </button>
+                <div class="progress-info">
+                    <span id="sample-id" class="sample-id">-</span>
+                    <span id="progress" class="progress">0/0</span>
+                    <div class="jump-to-page">
+                        <label for="page-input">跳转到:</label>
+                        <input type="number" id="page-input" class="page-input" min="1" placeholder="页码">
+                        <button id="btn-jump" class="btn-jump">跳转</button>
+                    </div>
+                </div>
+                <button id="btn-next" class="btn-nav" title="下一张 (→)">
+                    下一张 →
+                </button>
+            </div>
+
+            <!-- 图片显示区域 -->
+            <div class="images-container">
+                <div class="image-panel">
+                    <div class="image-label">原图</div>
+                    <div class="image-wrapper">
+                        <img id="original-img" src="" alt="原图" class="image">
+                        <div class="image-placeholder" id="original-placeholder">加载中...</div>
+                    </div>
+                </div>
+                <div class="image-panel">
+                    <div class="image-label">
+                        <span>渲染图</span>
+                        <span id="current-model-name" class="model-name-badge"></span>
+                        <select id="rendered-model-select" class="rendered-model-select" style="display: none;">
+                            <!-- 多模型模式下显示，用于切换查看不同模型的渲染图 -->
+                        </select>
+                    </div>
+                    <div class="image-wrapper">
+                        <img id="rendered-img" src="" alt="渲染图" class="image">
+                        <div class="image-placeholder" id="rendered-placeholder">加载中...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分数显示区域 -->
+            <div class="scores-container" id="scores-container">
+                <!-- 单模型分数显示（默认） -->
+                <div id="single-model-scores" class="single-model-scores">
+                    <div class="score-item">
+                        <span class="score-label">SCS:</span>
+                        <span class="score-value" id="score-scs">-</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">CodeVQA:</span>
+                        <span class="score-value" id="score-codevqa">-</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">SigLIP:</span>
+                        <span class="score-value" id="score-siglip">-</span>
+                    </div>
+                </div>
+                <!-- 多模型分数显示 -->
+                <div id="multi-model-scores" class="multi-model-scores" style="display: none;">
+                    <!-- 动态生成多个模型的分数表格 -->
+                </div>
+            </div>
+
+            <!-- 状态按钮 -->
+            <div class="status-buttons">
+                <button id="btn-approved" class="btn-status btn-approved" data-status="approved">
+                    合格
+                </button>
+                <button id="btn-rejected" class="btn-status btn-rejected" data-status="rejected">
+                    不合格
+                </button>
+                <button id="btn-pending" class="btn-status btn-pending" data-status="pending">
+                    待定
+                </button>
+            </div>
+        </div>
+
+        <!-- 空状态提示 -->
+        <div id="empty-message" class="empty-message" style="display: none;">
+            <p>没有找到样本数据</p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/screening.js') }}"></script>
+</body>
+</html>
+

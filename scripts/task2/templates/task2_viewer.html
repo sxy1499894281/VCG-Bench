@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 2 数据查看器</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/task2_viewer.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部控制栏 -->
+        <div class="header">
+            <div class="filter-controls">
+                <div class="model-selector">
+                    <label for="model-select" class="model-label">单模型:</label>
+                    <select id="model-select" class="model-select">
+                        <option value="">加载中...</option>
+                    </select>
+                </div>
+                <div class="multi-model-selector">
+                    <label class="model-label">多模型筛选:</label>
+                    <div class="multi-model-container">
+                        <div class="multi-model-input-group">
+                            <select id="multi-model-add-select" class="model-select-add">
+                                <option value="">选择模型添加到列表...</option>
+                            </select>
+                            <button id="btn-add-model" class="btn-add-model">添加</button>
+                        </div>
+                        <div id="selected-models-list" class="selected-models-list">
+                            <!-- 已选中的模型将显示在这里 -->
+                        </div>
+                        <button id="btn-apply-multi-filter" class="btn-apply-filter">应用筛选</button>
+                        <button id="btn-clear-models" class="btn-clear-models">清空列表</button>
+                    </div>
+                </div>
+                <button id="btn-filter-all" class="btn-filter active">显示全部</button>
+                <button id="btn-filter-manually-modified" class="btn-filter">仅显示手动修改</button>
+            </div>
+        </div>
+
+        <!-- 主要内容区域 -->
+        <div class="main-content">
+            <!-- 导航栏 -->
+            <div class="navigation">
+                <button id="btn-prev" class="btn-nav" title="上一个 (←)">
+                    ← 上一个
+                </button>
+                <div class="progress-info">
+                    <span id="instruction-id" class="instruction-id">-</span>
+                    <span id="progress" class="progress">0/0</span>
+                    <div class="jump-to-page">
+                        <label for="page-input">跳转到:</label>
+                        <input type="number" id="page-input" class="page-input" min="1" placeholder="页码">
+                        <button id="btn-jump" class="btn-jump">跳转</button>
+                    </div>
+                </div>
+                <button id="btn-next" class="btn-nav" title="下一个 (→)">
+                    下一个 →
+                </button>
+            </div>
+
+            <!-- 图片和指令显示区域 -->
+            <div class="content-grid">
+                <!-- 左侧：原始渲染图和指令 -->
+                <div class="left-panel">
+                    <div class="image-panel">
+                        <div class="image-label">原始渲染图 (render.png)</div>
+                        <div class="image-wrapper">
+                            <img id="rendered-img" src="" alt="原始渲染图" class="image">
+                            <div class="image-placeholder" id="rendered-placeholder">加载中...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="instruction-panel">
+                        <div class="instruction-header">
+                            <label for="instruction-level-select" class="instruction-label">指令难度:</label>
+                            <select id="instruction-level-select" class="instruction-level-select">
+                                <option value="">全部</option>
+                                <option value="Easy">Easy</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Hard">Hard</option>
+                            </select>
+                        </div>
+                        <div class="instruction-content">
+                            <label for="instruction-text" class="instruction-label">指令内容:</label>
+                            <textarea id="instruction-text" class="instruction-text" readonly></textarea>
+                            <button class="btn-copy" data-target="instruction-text">复制</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧：修改后的渲染图和指标 -->
+                <div class="right-panel">
+                    <div class="image-panel">
+                        <div class="image-label">
+                            <span>修改后渲染图</span>
+                            <span id="current-model-name" class="model-name-badge"></span>
+                            <select id="modified-model-select" class="modified-model-select" style="display: none;">
+                                <!-- 多模型模式下显示，用于切换查看不同模型的修改后渲染图 -->
+                            </select>
+                        </div>
+                        <div class="image-wrapper">
+                            <img id="modified-img" src="" alt="修改后渲染图" class="image">
+                            <div class="image-placeholder" id="modified-placeholder">加载中...</div>
+                        </div>
+                    </div>
+
+                    <!-- 指标分数显示 -->
+                    <div class="scores-panel">
+                        <div class="score-item">
+                            <span class="score-label">XDRFR:</span>
+                            <span class="score-value" id="score-xdrfr">-</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="score-label">SCS:</span>
+                            <span class="score-value" id="score-scs">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- XDRFR 问题集和答案 -->
+            <div class="xdrfr-panel">
+                <div class="xdrfr-header">
+                    <h3>XDRFR 问题集和答案</h3>
+                </div>
+                <div id="xdrfr-questions-container" class="xdrfr-questions-container">
+                    <!-- 动态生成问题列表 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 空状态提示 -->
+        <div id="empty-message" class="empty-message" style="display: none;">
+            <p>没有找到指令数据</p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/task2_viewer.js') }}"></script>
+</body>
+</html>
+
