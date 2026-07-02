@@ -1,8 +1,8 @@
+# VCG-Bench
+
 <div align="center">
 
-<img src="assets/vcg-bench-logo.svg" width="520" alt="VCG-Bench Logo">
-
-**A unified visual-centric benchmark for structured diagram generation and editing.**
+**Synthetic data and evaluation pipeline for visual-centric structured diagram generation and editing.**
 
 [![arXiv](https://img.shields.io/badge/arXiv-2605.15677-b31b1b)](https://arxiv.org/abs/2605.15677)
 [![Dataset](https://img.shields.io/badge/HuggingFace-VCG--Bench-yellow)](https://huggingface.co/datasets/sxy1620348809/VCG-Bench)
@@ -18,7 +18,9 @@
 
 </div>
 
-VCG-Bench evaluates whether vision-language models can turn professional diagrams into executable, editable `mxGraph` XML and then edit that XML under natural-language instructions. It focuses on the diagram-as-code setting used by Draw.io / diagrams.net: outputs must be structurally valid, renderable, visually faithful, and practical to edit.
+VCG-Bench is a synthetic-data construction and evaluation pipeline for the diagram-as-code setting. The goal is to bootstrap open-source models with image-to-`mxGraph` data and instruction-editing examples, then evaluate whether they can produce executable, editable Draw.io / diagrams.net diagrams.
+
+The benchmark is designed around one practical observation: high-quality diagram reconstruction is not only a model-output problem. Dataset synthesis can provide cold-start supervision and evaluation signals, while interactive agent workflows such as the companion `drawio-slide-reconstruction` skill are better suited for production-quality reconstruction, visual inspection, and multi-step refinement with Codex.
 
 ## Framework
 
@@ -26,11 +28,28 @@ VCG-Bench evaluates whether vision-language models can turn professional diagram
 <img src="assets/figures/framework_official.png" width="820" alt="VCG-Bench framework overview">
 </div>
 
-VCG-Bench unifies two workflows: vision-to-XML reconstruction from diagram images, and instruction-based XML editing through deterministic patch application.
+VCG-Bench unifies two workflows:
+
+- **Task 1: Vision-to-XML Generation**: synthesize and evaluate image-to-`mxGraph` examples for cold-starting diagram-to-code models.
+- **Task 2: Instruction-based XML Editing**: synthesize natural-language edit instructions and evaluate deterministic XML patching.
+
+## Synthetic Data Pipeline
 
 <div align="center">
 <img src="assets/figures/data_pipeline_readme.png" width="820" alt="VCG-Bench data construction pipeline">
 </div>
+
+The data pipeline follows a machine-generation plus validation loop: collect candidate diagrams, generate structured descriptions, synthesize `mxGraph` XML, render and validate outputs, filter by visual similarity and parseability, and keep high-quality samples for training and evaluation. This makes VCG-Bench useful as a cold-start data source for open-source models that need structured diagram reconstruction supervision.
+
+## Skill-Based High-Fidelity Reconstruction
+
+VCG-Bench is the benchmark and synthetic data engine. For high-quality one-off reconstruction of complex slides, posters, architecture diagrams, or research figures, use the companion `drawio-slide-reconstruction` skill with Codex. The skill turns a reference image into an editable `.drawio` file and exported PNG preview, then lets you keep improving it conversationally:
+
+- ask Codex to fix missing icons, crop seams, alignment drift, bad arrow paths, or text size issues;
+- ask for larger fonts, cleaner spacing, or a more presentation-ready layout;
+- keep the `.drawio` file editable while iterating through visual defects.
+
+This agent-in-the-loop workflow is intentionally complementary to VCG-Bench: the benchmark creates data and metrics for model development, while the skill provides a practical path to high-fidelity diagram reconstruction.
 
 ## What This Repository Contains
 
@@ -156,6 +175,16 @@ CUSTOM_VISION_MODEL=gemini-3-pro-preview
 
 The smoke tests below do not require an API key.
 
+For API-based generation, configure `.env` with an OpenAI-compatible endpoint:
+
+```bash
+CUSTOM_API_KEY=your_api_key_here
+CUSTOM_BASE_URL=https://your-endpoint/v1
+CUSTOM_VISION_MODEL=gemini-3-pro-preview
+```
+
+The local release workspace has been verified with this configuration pattern for single-image generation, Draw.io rendering, and lightweight evaluation.
+
 ## Draw.io Setup
 
 Draw.io Desktop/CLI is required when rendering XML to PNG and for execution-success metrics that render XML.
@@ -253,6 +282,8 @@ python scripts/task1/evaluate_single_image.py \
 ```
 
 `rendered.png` is produced when Draw.io is installed and generation is run without `--skip-render`.
+
+Local verification for this release ran the same workflow with `gemini-3-pro-preview`: description generation, XML generation, Draw.io rendering, and single-image evaluation completed successfully with `execution_success_rate = 1.0`.
 
 ## Batch Workflows
 
