@@ -152,8 +152,7 @@
 
     .hero-grid > *,
     .section-head > *,
-    .split > *,
-    .dataset-grid > * {
+    .split > * {
       min-width: 0;
     }
 
@@ -607,48 +606,6 @@
       font-size: 14px;
     }
 
-    .dataset-grid {
-      display: grid;
-      grid-template-columns: 0.78fr 1.22fr;
-      gap: 24px;
-      align-items: start;
-    }
-
-    .metric-board {
-      display: grid;
-      gap: 12px;
-    }
-
-    .metric-row {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--paper);
-      padding: 14px;
-    }
-
-    .metric-row strong {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      font-size: 15px;
-      margin-bottom: 10px;
-    }
-
-    .bar {
-      height: 9px;
-      overflow: hidden;
-      border-radius: 999px;
-      background: #e8edf5;
-    }
-
-    .bar span {
-      display: block;
-      height: 100%;
-      width: var(--w);
-      background: linear-gradient(90deg, var(--blue), var(--teal));
-      border-radius: inherit;
-    }
-
     .result-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -848,8 +805,7 @@
     @media (max-width: 980px) {
       .hero-grid,
       .section-head,
-      .split,
-      .dataset-grid {
+      .split {
         grid-template-columns: 1fr;
       }
 
@@ -920,10 +876,10 @@
 
       .stats,
       .tasks,
-      .pipeline-grid,
-      .result-grid,
-      .resources,
-      .visual-top,
+        .pipeline-grid,
+        .result-grid,
+        .resources,
+        .visual-top,
       .case-images {
         grid-template-columns: 1fr;
       }
@@ -1142,21 +1098,6 @@
           <div class="phase"><b>Candidate pool</b><span>5,000+ diagrams from template repositories, papers, anonymized corporate diagrams, and permissively licensed web diagrams.</span></div>
           <div class="phase"><b>Machine generation</b><span>VLMs produce structured captions and candidate <code>mxGraph</code> XML, then render outputs for automatic validation.</span></div>
           <div class="phase"><b>Human verification</b><span>Human review checks structural completeness, text accuracy, and editability before inclusion in the release.</span></div>
-        </div>
-        <div class="dataset-grid" style="margin-top: 24px;">
-          <div class="metric-board reveal" aria-label="Dataset release summary">
-            <div class="metric-row"><strong><span>Released rows</span><span>1,449</span></strong><div class="bar"><span style="--w:100%"></span></div></div>
-            <div class="metric-row"><strong><span>Rows with XML</span><span>1,444</span></strong><div class="bar"><span style="--w:99.7%"></span></div></div>
-            <div class="metric-row"><strong><span>Rows without XML</span><span>5</span></strong><div class="bar"><span style="--w:0.3%"></span></div></div>
-          </div>
-          <div class="metric-board reveal" aria-label="Domain distribution">
-            <div class="metric-row"><strong><span>Business</span><span>545</span></strong><div class="bar"><span style="--w:100%"></span></div></div>
-            <div class="metric-row"><strong><span>Academic</span><span>367</span></strong><div class="bar"><span style="--w:67%"></span></div></div>
-            <div class="metric-row"><strong><span>Software</span><span>221</span></strong><div class="bar"><span style="--w:41%"></span></div></div>
-            <div class="metric-row"><strong><span>Management</span><span>153</span></strong><div class="bar"><span style="--w:28%"></span></div></div>
-            <div class="metric-row"><strong><span>UIUX</span><span>109</span></strong><div class="bar"><span style="--w:20%"></span></div></div>
-            <div class="metric-row"><strong><span>General</span><span>54</span></strong><div class="bar"><span style="--w:10%"></span></div></div>
-          </div>
         </div>
       </div>
     </section>
