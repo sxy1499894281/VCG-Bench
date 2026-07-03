@@ -7,18 +7,24 @@
   <meta name="description" content="VCG-Bench: Towards A Unified Visual-Centric Benchmark for Structured Generation and Editing.">
   <style>
     :root {
-      --ink: #132033;
-      --muted: #647084;
-      --line: #d9e0ea;
+      --bg: #f6f7f9;
       --paper: #ffffff;
-      --soft: #f5f7fb;
-      --blue: #2357d6;
-      --teal: #0d9488;
-      --green: #21845a;
-      --orange: #d97706;
-      --red: #dc2626;
-      --shadow: 0 18px 54px rgba(23, 34, 51, 0.08);
+      --paper-soft: #fbfcfe;
+      --ink: #101828;
+      --ink-soft: #344054;
+      --muted: #667085;
+      --faint: #98a2b3;
+      --line: #d8dee8;
+      --line-strong: #b8c2d3;
+      --accent: #1f5eff;
+      --accent-deep: #133eb4;
+      --accent-soft: #eef4ff;
+      --code: #0b1220;
+      --warn: #b42318;
+      --good: #027a48;
+      --shadow: 0 24px 80px rgba(16, 24, 40, 0.08);
       --radius: 8px;
+      --max: 1180px;
     }
 
     * {
@@ -27,18 +33,19 @@
 
     html {
       scroll-behavior: smooth;
+      width: 100%;
+      max-width: 100%;
     }
 
     body {
       margin: 0;
       color: var(--ink);
-      background:
-        linear-gradient(90deg, rgba(35, 87, 214, 0.04) 1px, transparent 1px),
-        linear-gradient(rgba(13, 148, 136, 0.035) 1px, transparent 1px),
-        #fbfcfe;
-      background-size: 56px 56px;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
       letter-spacing: 0;
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100%;
     }
 
     a {
@@ -51,17 +58,28 @@
       max-width: 100%;
     }
 
+    code,
+    pre {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    code {
+      color: var(--accent-deep);
+      font-size: 0.94em;
+    }
+
     .wrap {
-      width: min(1180px, calc(100% - 40px));
+      width: calc(100% - 40px);
+      max-width: var(--max);
       margin: 0 auto;
     }
 
     .topbar {
       position: sticky;
       top: 0;
-      z-index: 20;
-      border-bottom: 1px solid rgba(217, 224, 234, 0.82);
-      background: rgba(255, 255, 255, 0.92);
+      z-index: 40;
+      border-bottom: 1px solid rgba(216, 222, 232, 0.84);
+      background: rgba(246, 247, 249, 0.9);
       backdrop-filter: blur(16px);
     }
 
@@ -70,141 +88,132 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
+      gap: 24px;
     }
 
     .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 780;
+      color: var(--ink);
       font-size: 17px;
-    }
-
-    .brand-mark {
-      width: 28px;
-      height: 28px;
-      border: 2px solid var(--blue);
-      border-radius: 7px;
-      position: relative;
-      background: var(--paper);
-    }
-
-    .brand-mark::before,
-    .brand-mark::after {
-      content: "";
-      position: absolute;
-      background: var(--blue);
-      border-radius: 999px;
-    }
-
-    .brand-mark::before {
-      width: 16px;
-      height: 2px;
-      left: 5px;
-      top: 8px;
-    }
-
-    .brand-mark::after {
-      width: 10px;
-      height: 2px;
-      left: 9px;
-      top: 16px;
-      background: var(--teal);
+      font-weight: 760;
+      white-space: nowrap;
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
       justify-content: flex-end;
+      gap: 4px;
+      flex-wrap: wrap;
+      min-width: 0;
     }
 
     .nav-links a {
       min-height: 34px;
       display: inline-flex;
       align-items: center;
-      padding: 0 11px;
-      border-radius: 8px;
-      color: #43506a;
+      padding: 0 10px;
+      border-radius: 6px;
+      color: var(--ink-soft);
       font-size: 14px;
       font-weight: 650;
     }
 
-    .nav-links a:hover {
-      background: #edf3ff;
-      color: var(--blue);
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--accent-deep);
+      background: var(--accent-soft);
+      outline: none;
     }
 
     .hero {
-      padding: 76px 0 54px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(245, 247, 251, 0.9));
+      padding: 54px 0 30px;
       border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(180deg, #ffffff 0%, #f7f9fc 76%, #f6f7f9 100%);
     }
 
     .hero-grid {
       display: grid;
-      grid-template-columns: 0.95fr 1.05fr;
-      align-items: center;
+      grid-template-columns: minmax(0, 0.88fr) minmax(420px, 1.12fr);
       gap: 42px;
+      align-items: center;
     }
 
-    .hero-grid > *,
-    .section-head > *,
-    .split > * {
+    .hero-copy,
+    .hero-media,
+    .section-head,
+    .figure-shell,
+    .case,
+    .resource {
       min-width: 0;
     }
 
-    .kicker {
+    .artifact,
+    .artifact *,
+    .figure-shell,
+    .case,
+    .case * {
+      min-width: 0;
+    }
+
+    .eyebrow-row {
       display: flex;
+      gap: 8px;
       align-items: center;
-      gap: 10px;
       flex-wrap: wrap;
       margin-bottom: 18px;
-      color: var(--muted);
-      font-weight: 720;
-      font-size: 14px;
     }
 
     .tag {
+      min-height: 30px;
       display: inline-flex;
       align-items: center;
-      min-height: 30px;
-      padding: 0 10px;
+      max-width: 100%;
       border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--paper);
-      color: #32415a;
+      border-radius: 6px;
+      padding: 0 10px;
+      background: rgba(255, 255, 255, 0.74);
+      color: var(--ink-soft);
+      font-size: 13px;
+      font-weight: 720;
+      overflow-wrap: anywhere;
     }
 
-    .tag.is-accepted {
-      border-color: rgba(33, 132, 90, 0.32);
-      background: rgba(33, 132, 90, 0.08);
-      color: var(--green);
+    .tag.strong {
+      border-color: rgba(31, 94, 255, 0.28);
+      background: var(--accent-soft);
+      color: var(--accent-deep);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
     }
 
     h1 {
-      margin: 0;
-      font-size: 48px;
-      line-height: 1.04;
+      margin-bottom: 0;
+      max-width: 840px;
+      font-size: 52px;
+      line-height: 1.02;
+      font-weight: 790;
       letter-spacing: 0;
-      max-width: 780px;
       overflow-wrap: break-word;
     }
 
     .lead {
-      margin: 20px 0 0;
-      color: #40506a;
+      margin: 22px 0 0;
+      max-width: 720px;
+      color: var(--ink-soft);
       font-size: 18px;
-      line-height: 1.65;
-      max-width: 760px;
+      line-height: 1.68;
     }
 
-    .hero-actions {
+    .actions {
       display: flex;
-      gap: 10px;
       flex-wrap: wrap;
+      gap: 10px;
       margin-top: 28px;
     }
 
@@ -213,445 +222,466 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 0 15px;
+      border: 1px solid var(--line-strong);
       border-radius: 8px;
-      border: 1px solid #c9d4e5;
+      padding: 0 15px;
       background: var(--paper);
-      color: #26344d;
+      color: var(--ink);
+      font-size: 14px;
       font-weight: 760;
-      box-shadow: 0 7px 18px rgba(19, 32, 51, 0.06);
-      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
-    }
-
-    .button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 13px 28px rgba(19, 32, 51, 0.11);
-      border-color: #9eb5da;
+      box-shadow: 0 10px 24px rgba(16, 24, 40, 0.06);
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease;
     }
 
     .button.primary {
-      border-color: var(--blue);
-      background: var(--blue);
-      color: #fff;
+      border-color: var(--accent);
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 14px 30px rgba(31, 94, 255, 0.18);
     }
 
-    .stats {
-      margin-top: 30px;
+    .button:hover,
+    .button:focus-visible {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      box-shadow: 0 18px 36px rgba(16, 24, 40, 0.11);
+      outline: none;
+    }
+
+    .hero-metrics {
       display: grid;
-      grid-template-columns: repeat(4, minmax(110px, 1fr));
-      gap: 10px;
-    }
-
-    .stat {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1px;
+      margin-top: 34px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.78);
-      padding: 14px 13px;
+      overflow: hidden;
+      background: var(--line);
     }
 
-    .stat strong {
+    .metric {
+      min-height: 92px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.84);
+    }
+
+    .metric strong {
       display: block;
-      font-size: 24px;
+      color: var(--ink);
+      font-size: 28px;
       line-height: 1;
       margin-bottom: 8px;
-      color: var(--ink);
     }
 
-    .stat span {
+    .metric span {
       color: var(--muted);
       font-size: 13px;
+      font-weight: 650;
       line-height: 1.35;
-      display: block;
     }
 
-    .hero-visual {
-      position: relative;
-      min-height: 540px;
-      background: #ffffff;
-      border: 1px solid #d9e2ee;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      min-width: 0;
-    }
-
-    .hero-visual::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(135deg, rgba(35, 87, 214, 0.08), transparent 35%),
-        linear-gradient(315deg, rgba(13, 148, 136, 0.08), transparent 38%);
-      pointer-events: none;
-    }
-
-    .visual-inner {
-      position: relative;
-      padding: 18px;
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-
-    .visual-top {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .mini-figure {
+    .artifact {
       border: 1px solid var(--line);
       border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.76);
+      box-shadow: var(--shadow);
       overflow: hidden;
-      background: var(--paper);
-      min-width: 0;
     }
 
-    .mini-figure .cap {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 9px 10px;
-      font-size: 12px;
-      font-weight: 780;
-      color: #31415d;
-      border-bottom: 1px solid var(--line);
-      background: #f8fafc;
-    }
-
-    .mini-figure img {
-      aspect-ratio: 16 / 9;
-      width: 100%;
-      height: auto;
-      object-fit: cover;
-      object-position: top center;
-    }
-
-    .pipeline {
-      position: relative;
+    .artifact-top {
       display: grid;
-      grid-template-columns: 1fr 34px 1fr 34px 1fr;
-      align-items: stretch;
-      gap: 0;
-      margin: 4px 0;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--line);
     }
 
-    .pipe-step {
-      border: 1px solid #cdd8e8;
-      border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.9);
-      padding: 14px;
-      min-height: 120px;
+    .artifact-figure {
       min-width: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      margin: 0;
+      background: var(--paper);
     }
 
-    .pipe-step b {
-      font-size: 14px;
-      color: #20324d;
+    .artifact-figure img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      object-position: center;
     }
 
-    .pipe-step span {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    .pipe-arrow {
-      position: relative;
-    }
-
-    .pipe-arrow::before {
-      content: "";
-      position: absolute;
-      left: 6px;
-      right: 6px;
-      top: 50%;
-      height: 2px;
-      background: linear-gradient(90deg, var(--blue), var(--teal));
-      transform: translateY(-50%);
-      animation: flow 1.8s linear infinite;
-      background-size: 80px 2px;
-    }
-
-    .pipe-arrow::after {
-      content: "";
-      position: absolute;
-      right: 4px;
-      top: calc(50% - 5px);
-      width: 10px;
-      height: 10px;
-      border-top: 2px solid var(--teal);
-      border-right: 2px solid var(--teal);
-      transform: rotate(45deg);
-    }
-
-    @keyframes flow {
-      from { background-position: 0 0; }
-      to { background-position: 80px 0; }
-    }
-
-    .xml-window {
-      border: 1px solid #18263c;
-      border-radius: var(--radius);
-      overflow: hidden;
-      background: #101827;
-      min-width: 0;
-      max-width: 100%;
-    }
-
-    .xml-title {
-      height: 34px;
+    .cap {
+      min-height: 40px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
       padding: 0 12px;
-      color: #dbeafe;
+      color: var(--ink-soft);
       font-size: 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      font-weight: 760;
+      text-transform: uppercase;
+      min-width: 0;
     }
 
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--red);
+    .cap span,
+    .figure-label span,
+    .figure-label small,
+    .case-label span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .dot:nth-child(2) {
-      background: var(--orange);
+    .cap span:last-child {
+      color: var(--faint);
+      font-weight: 700;
+      text-transform: none;
     }
 
-    .dot:nth-child(3) {
-      background: var(--green);
+    .artifact-code {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px;
+      background: var(--line);
+      border-top: 1px solid var(--line);
     }
 
-    pre {
-      margin: 0;
-      padding: 14px;
-      overflow: auto;
-      color: #c7d2fe;
-      font-size: 12px;
+    .code-step {
+      min-height: 118px;
+      padding: 16px;
+      background: var(--paper-soft);
+    }
+
+    .code-step b {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .code-step span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
       line-height: 1.5;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .terminal {
+      background: var(--code);
+      color: #d7e2ff;
+      padding: 16px;
+    }
+
+    .terminal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 12px;
+      color: #8ea4d9;
+      font-size: 12px;
+      font-weight: 760;
+    }
+
+    .dots {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .dots i {
+      width: 9px;
+      height: 9px;
+      display: block;
+      border-radius: 999px;
+      background: #5b6b8f;
+    }
+
+    .terminal pre {
+      margin: 0;
+      max-height: 160px;
+      overflow: hidden;
+      color: #d7e2ff;
+      font-size: 12px;
+      line-height: 1.55;
       white-space: pre-wrap;
       overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     section {
-      padding: 72px 0;
-      border-bottom: 1px solid var(--line);
+      padding: 78px 0;
+    }
+
+    section + section {
+      border-top: 1px solid var(--line);
     }
 
     .section-head {
       display: grid;
-      grid-template-columns: minmax(0, 0.9fr) minmax(260px, 0.55fr);
-      gap: 36px;
+      grid-template-columns: minmax(0, 0.9fr) minmax(300px, 0.7fr);
+      gap: 42px;
       align-items: end;
       margin-bottom: 28px;
     }
 
     .eyebrow {
-      margin: 0 0 12px;
-      color: var(--blue);
-      font-size: 13px;
-      font-weight: 820;
+      margin: 0 0 10px;
+      color: var(--accent-deep);
+      font-size: 12px;
+      font-weight: 790;
       text-transform: uppercase;
     }
 
     h2 {
-      margin: 0;
+      margin-bottom: 0;
       font-size: 34px;
-      line-height: 1.15;
+      line-height: 1.12;
       letter-spacing: 0;
+      max-width: 760px;
     }
 
     .section-copy {
       margin: 0;
-      color: var(--muted);
-      line-height: 1.65;
+      color: var(--ink-soft);
       font-size: 16px;
+      line-height: 1.65;
+      max-width: 560px;
     }
 
-    .image-frame {
+    .figure-shell {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
       overflow: hidden;
-      border-radius: var(--radius);
-      border: 1px solid var(--line);
-      background: var(--paper);
-      box-shadow: var(--shadow);
+      box-shadow: 0 18px 48px rgba(16, 24, 40, 0.06);
     }
 
-    .image-frame img {
+    .figure-label {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--line);
+      padding: 0 14px;
+      color: var(--ink-soft);
+      font-size: 13px;
+      font-weight: 760;
+      min-width: 0;
+    }
+
+    .figure-label small {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .figure-shell img {
       width: 100%;
-      height: auto;
+      background: white;
     }
 
-    .split {
+    .problem-grid {
       display: grid;
-      grid-template-columns: 1.02fr 0.98fr;
-      gap: 24px;
-      align-items: start;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 28px;
+      align-items: stretch;
     }
 
-    .contrast-list {
+    .problem-grid .figure-shell img {
+      aspect-ratio: 1530 / 793;
+      object-fit: contain;
+    }
+
+    .argument {
       display: grid;
-      gap: 12px;
-    }
-
-    .point {
+      gap: 1px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--line);
+    }
+
+    .argument-item {
+      padding: 22px;
       background: var(--paper);
-      padding: 16px;
-      display: grid;
-      grid-template-columns: 8px 1fr;
-      gap: 12px;
-      box-shadow: 0 10px 26px rgba(19, 32, 51, 0.05);
     }
 
-    .point::before {
-      content: "";
-      width: 8px;
-      height: 100%;
-      min-height: 48px;
-      border-radius: 999px;
-      background: var(--blue);
-    }
-
-    .point.is-warn::before {
-      background: var(--orange);
-    }
-
-    .point.is-good::before {
-      background: var(--green);
-    }
-
-    .point h3,
-    .task h3,
-    .resource h3 {
-      margin: 0 0 8px;
+    .argument-item h3 {
+      margin-bottom: 10px;
       font-size: 18px;
-      letter-spacing: 0;
+      line-height: 1.24;
     }
 
-    .point p,
-    .task p,
-    .resource p {
+    .argument-item p {
       margin: 0;
       color: var(--muted);
-      line-height: 1.55;
+      font-size: 15px;
+      line-height: 1.62;
+    }
+
+    .argument-item.bad h3 {
+      color: var(--warn);
+    }
+
+    .argument-item.good h3 {
+      color: var(--good);
     }
 
     .tasks {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-top: 20px;
+      gap: 1px;
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--line);
     }
 
     .task {
+      padding: 22px;
+      background: var(--paper);
+    }
+
+    .task small {
+      display: inline-flex;
+      min-height: 26px;
+      align-items: center;
+      margin-bottom: 12px;
+      border: 1px solid rgba(31, 94, 255, 0.28);
+      border-radius: 6px;
+      padding: 0 8px;
+      color: var(--accent-deep);
+      background: var(--accent-soft);
+      font-weight: 780;
+    }
+
+    .task h3 {
+      margin-bottom: 8px;
+      font-size: 20px;
+      line-height: 1.24;
+    }
+
+    .task p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .data-phases {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1px;
+      margin-top: 16px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: var(--paper);
-      padding: 18px;
-      box-shadow: 0 12px 32px rgba(19, 32, 51, 0.06);
-    }
-
-    .task-label {
-      display: inline-flex;
-      min-height: 28px;
-      align-items: center;
-      padding: 0 9px;
-      border-radius: 7px;
-      color: #fff;
-      background: var(--blue);
-      font-size: 12px;
-      font-weight: 780;
-      margin-bottom: 14px;
-    }
-
-    .task:nth-child(2) .task-label {
-      background: var(--teal);
-    }
-
-    .pipeline-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 14px;
-      margin-top: 22px;
+      overflow: hidden;
+      background: var(--line);
     }
 
     .phase {
-      min-height: 138px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
+      min-height: 156px;
+      padding: 22px;
       background: var(--paper);
-      padding: 16px;
     }
 
     .phase b {
       display: block;
-      color: #243653;
-      font-size: 15px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      font-size: 17px;
+      line-height: 1.24;
     }
 
     .phase span {
+      display: block;
       color: var(--muted);
-      line-height: 1.5;
-      font-size: 14px;
+      font-size: 15px;
+      line-height: 1.6;
     }
 
-    .result-grid {
+    .findings {
+      background: #ffffff;
+    }
+
+    .finding-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .result {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: var(--paper);
-      padding: 18px;
-      min-height: 188px;
-      box-shadow: 0 12px 32px rgba(19, 32, 51, 0.055);
+      overflow: hidden;
+      background: var(--line);
     }
 
-    .result .num {
-      font-size: 34px;
+    .finding {
+      min-height: 252px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+      background: var(--paper-soft);
+    }
+
+    .finding .num {
+      color: var(--accent);
+      font-size: 38px;
       line-height: 1;
-      font-weight: 820;
-      color: var(--blue);
-      margin-bottom: 12px;
+      font-weight: 800;
+      margin-bottom: 20px;
     }
 
-    .result:nth-child(2) .num {
-      color: var(--orange);
+    .finding h3 {
+      margin-bottom: 10px;
+      font-size: 20px;
+      line-height: 1.26;
     }
 
-    .result:nth-child(3) .num {
-      color: var(--teal);
-    }
-
-    .result h3 {
-      margin: 0 0 9px;
-      font-size: 18px;
-    }
-
-    .result p {
+    .finding p {
       margin: 0;
       color: var(--muted);
-      line-height: 1.55;
+      font-size: 15px;
+      line-height: 1.62;
+    }
+
+    .metric-row {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 1px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--line);
+    }
+
+    .metric-chip {
+      min-height: 86px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      padding: 14px;
+      background: #fff;
+    }
+
+    .metric-chip b {
+      color: var(--ink);
       font-size: 15px;
     }
 
-    .cases {
+    .metric-chip span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .case-list {
       display: grid;
-      gap: 18px;
+      gap: 24px;
     }
 
     .case {
@@ -659,125 +689,157 @@
       border-radius: var(--radius);
       overflow: hidden;
       background: var(--paper);
-      box-shadow: var(--shadow);
+      box-shadow: 0 18px 52px rgba(16, 24, 40, 0.06);
     }
 
     .case-head {
+      min-height: 66px;
       display: flex;
+      align-items: center;
       justify-content: space-between;
       gap: 18px;
-      align-items: center;
-      padding: 14px 16px;
       border-bottom: 1px solid var(--line);
-      background: #f8fafc;
+      padding: 16px;
     }
 
     .case-head h3 {
       margin: 0;
-      font-size: 17px;
+      font-size: 18px;
+      line-height: 1.28;
     }
 
     .case-head span {
+      flex: 0 0 auto;
       color: var(--muted);
       font-size: 13px;
-      font-weight: 650;
+      font-weight: 700;
     }
 
     .case-images {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0;
+      gap: 1px;
+      background: var(--line);
     }
 
     .case-panel {
       min-width: 0;
-    }
-
-    .case-panel:first-child {
-      border-right: 1px solid var(--line);
-    }
-
-    .case-label {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 10px 12px;
-      color: #33435e;
-      font-size: 13px;
-      font-weight: 760;
-      border-bottom: 1px solid var(--line);
-      background: #ffffff;
+      background: var(--paper-soft);
     }
 
     .case-panel img {
       width: 100%;
       aspect-ratio: 16 / 9;
-      object-fit: cover;
-      object-position: top center;
-      background: #f8fafc;
-      transition: transform 220ms ease;
+      object-fit: contain;
+      background: white;
     }
 
-    .case:hover .case-panel img {
-      transform: scale(1.015);
+    .case-label {
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line);
+      padding: 0 12px;
+      color: var(--ink-soft);
+      font-size: 12px;
+      font-weight: 780;
+      text-transform: uppercase;
+      min-width: 0;
     }
 
-    .resources {
+    .case-label span:last-child {
+      color: var(--faint);
+      font-weight: 700;
+      text-transform: none;
+    }
+
+    .resource-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--line);
     }
 
     .resource {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
+      display: block;
+      min-height: 188px;
+      padding: 22px;
       background: var(--paper);
-      padding: 18px;
-      min-height: 152px;
-      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+      transition: background 160ms ease, color 160ms ease;
     }
 
-    .resource:hover {
-      transform: translateY(-2px);
-      border-color: #9eb5da;
-      box-shadow: 0 14px 30px rgba(19, 32, 51, 0.09);
+    .resource:hover,
+    .resource:focus-visible {
+      background: var(--accent-soft);
+      outline: none;
     }
 
     .resource small {
-      color: var(--blue);
-      font-weight: 800;
+      display: block;
+      margin-bottom: 24px;
+      color: var(--accent-deep);
+      font-size: 12px;
+      font-weight: 790;
       text-transform: uppercase;
     }
 
-    .citation-box {
-      border: 1px solid #cdd8e8;
+    .resource h3 {
+      margin-bottom: 10px;
+      font-size: 18px;
+      line-height: 1.24;
+    }
+
+    .resource p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .citation {
+      margin-top: 24px;
+      border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: #101827;
       overflow: hidden;
-      box-shadow: var(--shadow);
+      background: var(--code);
+      box-shadow: 0 18px 52px rgba(16, 24, 40, 0.08);
     }
 
-    .citation-box .xml-title {
-      color: #e2e8f0;
+    .citation .terminal-head {
+      margin: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 14px 16px;
+      color: #c6d3f4;
     }
 
-    .citation-box pre {
-      color: #dbeafe;
+    .citation pre {
+      margin: 0;
+      overflow-x: hidden;
+      padding: 18px;
+      color: #e7ecff;
+      font-size: 13px;
+      line-height: 1.58;
       white-space: pre-wrap;
+      overflow-wrap: anywhere;
     }
 
     .footer {
+      border-top: 1px solid var(--line);
       padding: 26px 0;
       color: var(--muted);
-      background: #fff;
+      background: var(--paper);
       font-size: 14px;
     }
 
     .reveal {
-      opacity: 0;
-      transform: translateY(16px);
-      transition: opacity 500ms ease, transform 500ms ease;
+      opacity: 1;
+      transform: none;
+      transition: opacity 520ms ease, transform 520ms ease;
     }
 
     .reveal.is-visible {
@@ -785,81 +847,68 @@
       transform: translateY(0);
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      html {
-        scroll-behavior: auto;
+    @media (max-width: 1040px) {
+      h1 {
+        font-size: 44px;
       }
 
-      .reveal,
-      .button,
-      .resource,
-      .case-panel img {
-        transition: none;
+      h2 {
+        font-size: 30px;
       }
 
-      .pipe-arrow::before {
-        animation: none;
-      }
-    }
-
-    @media (max-width: 980px) {
       .hero-grid,
-      .section-head,
-      .split {
+      .problem-grid,
+      .section-head {
         grid-template-columns: 1fr;
       }
 
-      .hero {
-        padding-top: 54px;
+      .section-head {
+        gap: 14px;
+        align-items: start;
       }
 
-      h1 {
-        font-size: 38px;
-      }
-
-      .hero-visual {
-        min-height: 0;
-      }
-
-      .stats,
-      .result-grid,
-      .resources {
+      .resource-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .metric-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
 
-    @media (max-width: 720px) {
+    @media (max-width: 760px) {
       .wrap {
-        width: min(100% - 28px, 1180px);
+        width: calc(100% - 28px);
+        max-width: var(--max);
       }
 
       .nav {
+        min-height: auto;
         align-items: flex-start;
-        padding: 12px 0;
         flex-direction: column;
+        padding: 14px 0;
+        gap: 12px;
       }
 
       .nav-links {
         justify-content: flex-start;
         width: 100%;
-        min-width: 0;
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
 
       .nav-links a {
-        padding: 0 9px;
+        padding: 0 8px;
         font-size: 13px;
-        justify-content: flex-start;
       }
 
-      .visual-inner {
-        padding: 12px;
+      .hero {
+        padding-top: 30px;
       }
 
       h1 {
-        font-size: 30px;
-        line-height: 1.12;
+        font-size: 34px;
+        line-height: 1.08;
+        max-width: 100%;
+        overflow-wrap: anywhere;
       }
 
       h2 {
@@ -868,51 +917,67 @@
 
       .lead {
         font-size: 16px;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+      }
+
+      .eyebrow-row {
+        align-items: flex-start;
+      }
+
+      .tag {
+        white-space: normal;
+      }
+
+      .hero-metrics,
+      .artifact-top,
+      .artifact-code,
+      .tasks,
+      .data-phases,
+      .finding-grid,
+      .case-images,
+      .resource-grid,
+      .metric-row {
+        grid-template-columns: 1fr;
+      }
+
+      .metric {
+        min-height: auto;
+      }
+
+      .case-head {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .artifact-figure img {
+        object-fit: contain;
+      }
+
+      .terminal pre {
+        font-size: 11px;
       }
 
       section {
-        padding: 52px 0;
+        padding: 58px 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
       }
 
-      .stats,
-      .tasks,
-        .pipeline-grid,
-        .result-grid,
-        .resources,
-        .visual-top,
-      .case-images {
-        grid-template-columns: 1fr;
+      .button,
+      .reveal,
+      .resource {
+        transition: none;
       }
 
-      .pipeline {
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-
-      .pipe-arrow {
-        height: 22px;
-      }
-
-      .pipe-arrow::before {
-        left: 50%;
-        right: auto;
-        top: 0;
-        bottom: 0;
-        width: 2px;
-        height: auto;
-        transform: translateX(-50%);
-      }
-
-      .pipe-arrow::after {
-        top: auto;
-        bottom: 3px;
-        right: calc(50% - 6px);
-        transform: rotate(135deg);
-      }
-
-      .case-panel:first-child {
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
+      .reveal {
+        opacity: 1;
+        transform: none;
       }
     }
   </style>
@@ -920,15 +985,12 @@
 <body>
   <header class="topbar">
     <div class="wrap nav">
-      <a class="brand" href="#top" aria-label="VCG-Bench home">
-        <span class="brand-mark" aria-hidden="true"></span>
-        <span>VCG-Bench</span>
-      </a>
+      <a class="brand" href="#top" aria-label="VCG-Bench home">VCG-Bench</a>
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#problem">Problem</a>
         <a href="#framework">Framework</a>
         <a href="#data">Data</a>
-        <a href="#results">Results</a>
+        <a href="#findings">Findings</a>
         <a href="#skill">Skill Cases</a>
         <a href="#resources">Resources</a>
       </nav>
@@ -938,73 +1000,70 @@
   <main id="top">
     <section class="hero">
       <div class="wrap hero-grid">
-        <div class="reveal">
-          <div class="kicker">
-            <span class="tag is-accepted">Accepted at ICML 2026</span>
+        <div class="hero-copy reveal">
+          <div class="eyebrow-row">
+            <span class="tag strong">Accepted at ICML 2026</span>
             <span class="tag">arXiv:2605.15677</span>
             <span class="tag">Diagram-as-Code</span>
           </div>
           <h1>VCG-Bench: Towards A Unified Visual-Centric Benchmark for Structured Generation and Editing</h1>
           <p class="lead">
-            A synthetic data and evaluation benchmark for converting diagram images into editable
-            <code>mxGraph</code> XML, then measuring whether models can generate, render, and edit
-            structured diagrams with controllable fidelity.
+            Synthetic data and evaluation for executable, editable diagram generation and instruction editing with
+            <code>mxGraph</code> XML.
           </p>
-          <div class="hero-actions" aria-label="Project links">
+          <div class="actions" aria-label="Project links">
             <a class="button primary" href="https://arxiv.org/abs/2605.15677">Paper</a>
             <a class="button" href="https://github.com/sxy1499894281/VCG-Bench">Code</a>
             <a class="button" href="https://huggingface.co/datasets/sxy1620348809/VCG-Bench">Dataset</a>
-            <a class="button" href="https://github.com/sxy1499894281/drawio-reconstruction-skill">Skill</a>
+            <a class="button" href="https://github.com/sxy1499894281/drawio-reconstruction">Skill</a>
+          </div>
+          <div class="hero-metrics" aria-label="VCG-Bench summary statistics">
+            <div class="metric"><strong>1,449</strong><span>released diagram samples</span></div>
+            <div class="metric"><strong>6</strong><span>coarse diagram domains</span></div>
+            <div class="metric"><strong>15</strong><span>fine-grained sub-domains</span></div>
+            <div class="metric"><strong>2</strong><span>generation and editing tasks</span></div>
           </div>
         </div>
 
-        <div class="hero-visual reveal" aria-label="Diagram-as-code pipeline preview">
-          <div class="visual-inner">
-            <div class="visual-top">
-              <figure class="mini-figure">
-                <figcaption class="cap"><span>Input diagram</span><span>Raster</span></figcaption>
-                <img src="assets/cases/data_lake_original.png" alt="Original data lake diagram">
+        <div class="hero-media reveal">
+          <div class="artifact" aria-label="Diagram-as-code preview">
+            <div class="artifact-top">
+              <figure class="artifact-figure">
+                <figcaption class="cap"><span>Source Diagram</span><span>Raster image</span></figcaption>
+                <img src="assets/cases/data_lake_original.png" alt="Original data lake architecture diagram">
               </figure>
-              <figure class="mini-figure">
-                <figcaption class="cap"><span>Rendered output</span><span>Draw.io</span></figcaption>
-                <img src="assets/cases/data_lake_drawio.png" alt="Reconstructed Draw.io diagram">
+              <figure class="artifact-figure">
+                <figcaption class="cap"><span>Structured Output</span><span>Draw.io export</span></figcaption>
+                <img src="assets/cases/data_lake_drawio.png" alt="Reconstructed Draw.io data lake diagram">
               </figure>
             </div>
-            <div class="pipeline" aria-label="VCG generation pipeline">
-              <div class="pipe-step">
-                <b>Visual input</b>
-                <span>Professional diagrams from academic, software, business, management, UIUX, and general domains.</span>
+            <div class="artifact-code">
+              <div class="code-step">
+                <b>Vision-to-XML</b>
+                <span>Generate editable graph structure from a raster diagram and structured visual description.</span>
               </div>
-              <div class="pipe-arrow" aria-hidden="true"></div>
-              <div class="pipe-step">
-                <b>Structured XML</b>
-                <span>Models synthesize editable <code>mxGraph</code> code with nodes, edges, text, layout, and style.</span>
+              <div class="code-step">
+                <b>Render and Verify</b>
+                <span>Parse, render, and evaluate outputs with execution, visual, and semantic checks.</span>
               </div>
-              <div class="pipe-arrow" aria-hidden="true"></div>
-              <div class="pipe-step">
-                <b>Executable render</b>
-                <span>Outputs are parsed, rendered, visually checked, and evaluated with structural metrics.</span>
+              <div class="code-step">
+                <b>Instruction Editing</b>
+                <span>Apply localized XML patches instead of regenerating pixels from scratch.</span>
               </div>
             </div>
-            <div class="xml-window" aria-label="mxGraph XML example">
-              <div class="xml-title"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span>mxGraph XML</span></div>
+            <div class="terminal">
+              <div class="terminal-head">
+                <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span>mxGraph XML</span>
+              </div>
               <pre>&lt;mxGraphModel&gt;
   &lt;root&gt;
-    &lt;mxCell id="agent" value="Pipeline Orchestration Agents" style="rounded=1;fillColor=#6d28d9"/&gt;
-    &lt;mxCell id="data_lake" value="Data Lake" vertex="1" parent="1"/&gt;
-    &lt;mxCell id="edge_1" edge="1" source="data_lake" target="agent"/&gt;
+    &lt;mxCell id="node_agent" value="Pipeline Orchestration Agents" vertex="1" /&gt;
+    &lt;mxCell id="edge_1" source="data_lake" target="node_agent" edge="1" /&gt;
   &lt;/root&gt;
 &lt;/mxGraphModel&gt;</pre>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="wrap">
-        <div class="stats reveal" aria-label="VCG-Bench summary statistics">
-          <div class="stat"><strong>1,449</strong><span>high-quality diagram samples</span></div>
-          <div class="stat"><strong>6</strong><span>coarse diagram domains</span></div>
-          <div class="stat"><strong>15</strong><span>fine-grained sub-domains</span></div>
-          <div class="stat"><strong>2</strong><span>generation and editing tasks</span></div>
         </div>
       </div>
     </section>
@@ -1014,36 +1073,34 @@
         <div class="section-head reveal">
           <div>
             <p class="eyebrow">Problem</p>
-            <h2>Pixel editing looks plausible, but diagram workflows need structure.</h2>
+            <h2>Pixel editing produces plausible diagrams, but professional diagram workflows need structure.</h2>
           </div>
           <p class="section-copy">
-            VCG-Bench formalizes the diagram-as-code setting: convert images into symbolic
-            <code>mxGraph</code> XML so diagrams can be edited deterministically instead of regenerated as pixels.
+            VCG-Bench shifts the unit of generation from raster pixels to executable <code>mxGraph</code> code, where nodes,
+            edges, text, styles, and geometry can be inspected and edited.
           </p>
         </div>
-        <div class="split">
-          <div class="image-frame reveal">
-            <img src="assets/figures/teaser_symbol_logic.png" alt="Diagram-as-pixels versus diagram-as-code comparison">
+        <div class="problem-grid">
+          <div class="figure-shell reveal">
+            <div class="figure-label">
+              <span>Diagram-as-Pixels vs Diagram-as-Code</span>
+              <small>Paper overview figure</small>
+            </div>
+            <img src="assets/figures/teaser_symbol_logic.png" alt="Comparison between pixel editing and diagram-as-code editing">
           </div>
-          <div class="contrast-list reveal">
-            <div class="point is-warn">
-              <div>
-                <h3>Diagram-as-Pixels</h3>
-                <p>Raster editing often introduces blurred lines, distorted text, scale drift, misplaced connectors, and hallucinated elements.</p>
-              </div>
-            </div>
-            <div class="point is-good">
-              <div>
-                <h3>Diagram-as-Code</h3>
-                <p>Structured XML exposes nodes, edges, styles, and geometry, making local edits cheaper, auditable, and repeatable.</p>
-              </div>
-            </div>
-            <div class="point">
-              <div>
-                <h3>Benchmark Target</h3>
-                <p>VCG-Bench separates the hard vision-to-structure step from the code-to-code editing step, then evaluates both.</p>
-              </div>
-            </div>
+          <div class="argument reveal">
+            <article class="argument-item bad">
+              <h3>Diagram-as-Pixels</h3>
+              <p>Raster editing is stochastic and unstructured. It can blur lines, deform text, shift scale, break connectors, and hallucinate visual elements.</p>
+            </article>
+            <article class="argument-item good">
+              <h3>Diagram-as-Code</h3>
+              <p>Symbolic XML keeps each diagram executable and editable. Local changes target explicit graph elements instead of re-sampling the whole image.</p>
+            </article>
+            <article class="argument-item">
+              <h3>Benchmark Target</h3>
+              <p>The benchmark separates visual structure recovery from code-level editing, making each capability measurable instead of blending them into one image score.</p>
+            </article>
           </div>
         </div>
       </div>
@@ -1054,26 +1111,29 @@
         <div class="section-head reveal">
           <div>
             <p class="eyebrow">Framework</p>
-            <h2>One benchmark for structured generation and instruction editing.</h2>
+            <h2>A unified benchmark for generation and editing around editable Draw.io diagrams.</h2>
           </div>
           <p class="section-copy">
-            VCG-Bench combines two complementary tasks around Draw.io / diagrams.net diagrams,
-            both grounded in executable <code>mxGraph</code> XML.
+            The framework evaluates whether models can create valid <code>mxGraph</code> from diagrams, then use that structure for deterministic instruction edits.
           </p>
         </div>
-        <div class="image-frame reveal">
+        <div class="figure-shell reveal">
+          <div class="figure-label">
+            <span>VCG-Bench framework</span>
+            <small>Required project figure</small>
+          </div>
           <img src="assets/figures/framework_official.png" alt="VCG-Bench framework overview">
         </div>
         <div class="tasks reveal">
           <article class="task">
-            <span class="task-label">Task 1</span>
+            <small>Task 1</small>
             <h3>Vision-to-XML Generation</h3>
-            <p>Given a raster diagram image and structured caption, a model generates valid <code>mxGraph</code> XML that can render back to a faithful diagram.</p>
+            <p>Given a raster diagram image and structured caption, generate valid <code>mxGraph</code> XML that can render into a faithful diagram.</p>
           </article>
           <article class="task">
-            <span class="task-label">Task 2</span>
+            <small>Task 2</small>
             <h3>Instruction-based XML Editing</h3>
-            <p>Given existing XML, rendered context, and natural-language instructions, a model predicts localized XML patches for deterministic editing.</p>
+            <p>Given existing XML, rendered context, and a natural-language instruction, predict localized XML patches for controlled edits.</p>
           </article>
         </div>
       </div>
@@ -1083,53 +1143,77 @@
       <div class="wrap">
         <div class="section-head reveal">
           <div>
-            <p class="eyebrow">Synthetic Data</p>
-            <h2>A data construction loop for cold-starting open-source models.</h2>
+            <p class="eyebrow">Synthetic Data Pipeline</p>
+            <h2>A machine-generation and human-verification loop for cold-starting open-source models.</h2>
           </div>
           <p class="section-copy">
-            The pipeline collects diverse diagrams, synthesizes structured descriptions and XML,
-            renders candidates, filters with parser and visual checks, and retains high-quality examples.
+            VCG-Bench constructs Diagram-as-Code data by collecting candidate diagrams, synthesizing descriptions and XML, rendering candidates, and filtering for valid, visually aligned examples.
           </p>
         </div>
-        <div class="image-frame reveal">
+        <div class="figure-shell reveal">
+          <div class="figure-label">
+            <span>Task 1 and Task 2 data generation</span>
+            <small>Synthetic data framework</small>
+          </div>
           <img src="assets/figures/data_pipeline.png" alt="VCG-Bench synthetic data generation pipeline">
         </div>
-        <div class="pipeline-grid reveal">
-          <div class="phase"><b>Candidate pool</b><span>5,000+ diagrams from template repositories, papers, anonymized corporate diagrams, and permissively licensed web diagrams.</span></div>
-          <div class="phase"><b>Machine generation</b><span>VLMs produce structured captions and candidate <code>mxGraph</code> XML, then render outputs for automatic validation.</span></div>
-          <div class="phase"><b>Human verification</b><span>Human review checks structural completeness, text accuracy, and editability before inclusion in the release.</span></div>
+        <div class="data-phases reveal">
+          <div class="phase">
+            <b>Candidate Collection</b>
+            <span>Start from diverse diagrams spanning academic, software, business, management, UIUX, and general domains.</span>
+          </div>
+          <div class="phase">
+            <b>XML Synthesis</b>
+            <span>Generate structured captions and candidate <code>mxGraph</code> XML, then render the code back into diagrams for checks.</span>
+          </div>
+          <div class="phase">
+            <b>Verification</b>
+            <span>Use parser validation, rendering verification, visual similarity, and human review to keep high-quality samples.</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="results">
+    <section id="findings" class="findings">
       <div class="wrap">
         <div class="section-head reveal">
           <div>
             <p class="eyebrow">Benchmark Findings</p>
-            <h2>Vision-to-code is the bottleneck; code-to-code editing is much more stable.</h2>
+            <h2>Vision-to-code is the bottleneck; code-to-code editing becomes much more stable once XML exists.</h2>
           </div>
           <p class="section-copy">
-            The benchmark reports executability, visual fidelity, and semantic compliance through ESR,
-            SCS, CodeXQA, SigLIP2, and XDRFR.
+            The paper reports execution, visual fidelity, and semantic compliance through ESR, SCS, CodeXQA, SigLIP2, and XDRFR.
           </p>
         </div>
-        <div class="result-grid reveal">
-          <article class="result">
-            <div class="num">0.9626</div>
-            <h3>Best Task 1 ESR</h3>
-            <p>Gemini-3-Pro leads closed-source models on Vision-to-XML generation, while open-source models often fail primarily on executability.</p>
+        <div class="finding-grid reveal">
+          <article class="finding">
+            <div>
+              <div class="num">0.9626</div>
+              <h3>Best Task 1 ESR</h3>
+            </div>
+            <p>Closed-source systems lead Vision-to-XML generation, while open-source models often fail on executability even when they identify parts of the diagram.</p>
           </article>
-          <article class="result">
-            <div class="num">0.0000</div>
-            <h3>Open-source failure mode</h3>
-            <p>Qwen3-VL-8B and Qwen3-VL-32B reach zero ESR in Task 1, highlighting the missing Draw.io domain knowledge.</p>
+          <article class="finding">
+            <div>
+              <div class="num">0.0000</div>
+              <h3>Open-source ESR failure mode</h3>
+            </div>
+            <p>Some open models collapse on valid Draw.io generation, showing that visual recognition alone is not enough for executable structured output.</p>
           </article>
-          <article class="result">
-            <div class="num">0.9405</div>
-            <h3>Best Task 2 XDRFR</h3>
-            <p>Once XML is available, constrained patch editing becomes reliable, with XDRFR distinguishing instruction-following quality.</p>
+          <article class="finding">
+            <div>
+              <div class="num">0.9405</div>
+              <h3>Best Task 2 XDRFR</h3>
+            </div>
+            <p>When the diagram is already available as XML, localized instruction editing is far more controllable and easier to verify.</p>
           </article>
+        </div>
+        <div class="metric-row reveal" aria-label="Evaluation metrics">
+          <div class="metric-chip"><b>ESR</b><span>Execution success for parseable, renderable XML.</span></div>
+          <div class="metric-chip"><b>SCS</b><span>Style and layout consistency against the diagram.</span></div>
+          <div class="metric-chip"><b>CodeXQA</b><span>XML-backed semantic fidelity for Task 1.</span></div>
+          <div class="metric-chip"><b>SigLIP2</b><span>Embedding similarity between source and render.</span></div>
+          <div class="metric-chip"><b>XDRFR</b><span>XML-grounded requirement following for Task 2.</span></div>
         </div>
       </div>
     </section>
@@ -1138,15 +1222,14 @@
       <div class="wrap">
         <div class="section-head reveal">
           <div>
-            <p class="eyebrow">Skill + Codex Cases</p>
-            <h2>Reconstruction examples generated with the drawio-reconstruction skill.</h2>
+            <p class="eyebrow">Skill + Codex Reconstruction Cases</p>
+            <h2>Practical diagram reconstruction examples from the companion skill workflow.</h2>
           </div>
           <p class="section-copy">
-            These three examples are reconstructed with the <code>drawio-reconstruction</code> skill using Codex GPT-5.5 xhigh.
-            Each right-hand image is the exported PNG from the reconstructed Draw.io file.
+            These examples are reconstructed with the <code>drawio-reconstruction</code> skill using Codex GPT-5.5 xhigh. The right-hand image in each pair is the Draw.io export.
           </p>
         </div>
-        <div class="cases">
+        <div class="case-list">
           <article class="case reveal">
             <div class="case-head">
               <h3>AI Agent Architecture for Unified Data Management</h3>
@@ -1158,11 +1241,12 @@
                 <img src="assets/cases/data_lake_original.png" alt="Original data lake architecture diagram">
               </div>
               <div class="case-panel">
-                <div class="case-label"><span>Skill + Codex Reconstruction</span><span>Draw.io export</span></div>
+                <div class="case-label"><span>Reconstructed</span><span>Draw.io export</span></div>
                 <img src="assets/cases/data_lake_drawio.png" alt="Reconstructed data lake architecture diagram">
               </div>
             </div>
           </article>
+
           <article class="case reveal">
             <div class="case-head">
               <h3>Running Example: Data Management</h3>
@@ -1174,11 +1258,12 @@
                 <img src="assets/cases/data_man_original.png" alt="Original data management workflow diagram">
               </div>
               <div class="case-panel">
-                <div class="case-label"><span>Skill + Codex Reconstruction</span><span>Draw.io export</span></div>
+                <div class="case-label"><span>Reconstructed</span><span>Draw.io export</span></div>
                 <img src="assets/cases/data_man_drawio.png" alt="Reconstructed data management workflow diagram">
               </div>
             </div>
           </article>
+
           <article class="case reveal">
             <div class="case-head">
               <h3>Materials Science Workflow</h3>
@@ -1190,7 +1275,7 @@
                 <img src="assets/cases/data_sci2_original.png" alt="Original materials science workflow diagram">
               </div>
               <div class="case-panel">
-                <div class="case-label"><span>Skill + Codex Reconstruction</span><span>Draw.io export</span></div>
+                <div class="case-label"><span>Reconstructed</span><span>Draw.io export</span></div>
                 <img src="assets/cases/data_sci2_drawio.png" alt="Reconstructed materials science workflow diagram">
               </div>
             </div>
@@ -1207,10 +1292,10 @@
             <h2>Paper, code, dataset, skill, and citation.</h2>
           </div>
           <p class="section-copy">
-            VCG-Bench code is released under MIT. The dataset release is hosted on Hugging Face under CC BY 4.0.
+            The VCG-Bench code release is under MIT. The public dataset is hosted on Hugging Face under CC BY 4.0.
           </p>
         </div>
-        <div class="resources reveal">
+        <div class="resource-grid reveal">
           <a class="resource" href="https://arxiv.org/abs/2605.15677">
             <small>Paper</small>
             <h3>arXiv:2605.15677</h3>
@@ -1224,16 +1309,19 @@
           <a class="resource" href="https://huggingface.co/datasets/sxy1620348809/VCG-Bench">
             <small>Dataset</small>
             <h3>Hugging Face</h3>
-            <p>Public Task 1 parquet release with images, descriptions, and XML.</p>
+            <p>Task 1 dataset release with images, descriptions, and restored XML.</p>
           </a>
-          <a class="resource" href="https://github.com/sxy1499894281/drawio-reconstruction-skill">
+          <a class="resource" href="https://github.com/sxy1499894281/drawio-reconstruction">
             <small>Skill</small>
-            <h3>drawio-reconstruction-skill</h3>
-            <p>Codex skill and scripts for reconstructing diagrams into Draw.io files.</p>
+            <h3>drawio-reconstruction</h3>
+            <p>Codex skill and helper scripts for reconstructing diagrams into editable Draw.io files.</p>
           </a>
         </div>
-        <div class="citation-box reveal" style="margin-top: 20px;">
-          <div class="xml-title"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span>BibTeX</span></div>
+        <div class="citation reveal">
+          <div class="terminal-head">
+            <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span>BibTeX</span>
+          </div>
           <pre>@misc{su2026vcgbenchunifiedvisualcentricbenchmark,
       title={VCG-Bench: Towards A Unified Visual-Centric Benchmark for Structured Generation and Editing},
       author={Xiaoyan Su and Peijie Dong and Zhenheng Tang and Song Tang and Yuyao Zhai and Kaitao Lin and Liang Chen and Gai Yuhang and Yuyu Luo and Qiang Wang and Xiaowen Chu},
@@ -1249,7 +1337,7 @@
   </main>
 
   <footer class="footer">
-    <div class="wrap">VCG-Bench, ICML 2026. Structured generation and editing for editable diagrams.</div>
+    <div class="wrap">VCG-Bench, ICML 2026. Structured generation and editing for executable, editable diagrams.</div>
   </footer>
 
   <script>
@@ -1259,9 +1347,9 @@
           entry.target.classList.add('is-visible');
         }
       }
-    }, { threshold: 0.12 });
+    }, { threshold: 0.1 });
 
-    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+    document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
   </script>
 </body>
 </html>
