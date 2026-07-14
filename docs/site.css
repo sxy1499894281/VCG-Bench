@@ -623,11 +623,13 @@ h2 em {
 }
 
 .hero-stats > div {
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-  min-height: 92px;
-  padding: 0 24px;
+  display: grid;
+  grid-template-rows: auto 2.7em;
+  align-content: center;
+  align-items: start;
+  gap: 9px;
+  min-height: 118px;
+  padding: 20px 32px;
   border-right: 1px solid rgba(255, 255, 255, 0.12);
 }
 
@@ -641,14 +643,16 @@ h2 em {
 
 .hero-stats strong {
   font-size: clamp(28px, 2.2vw, 40px);
-  line-height: 1;
+  line-height: 0.95;
   letter-spacing: -0.05em;
 }
 
 .hero-stats span {
+  display: block;
   color: rgba(230, 236, 248, 0.5);
   font-size: 11px;
   font-weight: 700;
+  line-height: 1.35;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -2695,8 +2699,8 @@ code {
   }
 
   .hero-stats > div {
-    min-height: 82px;
-    padding: 0 16px;
+    min-height: 104px;
+    padding: 18px 16px;
   }
 
   .section {
