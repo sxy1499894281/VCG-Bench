@@ -3,1353 +3,665 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>VCG-Bench</title>
-  <meta name="description" content="VCG-Bench: Towards A Unified Visual-Centric Benchmark for Structured Generation and Editing.">
-  <style>
-    :root {
-      --bg: #f6f7f9;
-      --paper: #ffffff;
-      --paper-soft: #fbfcfe;
-      --ink: #101828;
-      --ink-soft: #344054;
-      --muted: #667085;
-      --faint: #98a2b3;
-      --line: #d8dee8;
-      --line-strong: #b8c2d3;
-      --accent: #1f5eff;
-      --accent-deep: #133eb4;
-      --accent-soft: #eef4ff;
-      --code: #0b1220;
-      --warn: #b42318;
-      --good: #027a48;
-      --shadow: 0 24px 80px rgba(16, 24, 40, 0.08);
-      --radius: 8px;
-      --max: 1180px;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      width: 100%;
-      max-width: 100%;
-    }
-
-    body {
-      margin: 0;
-      color: var(--ink);
-      background: var(--bg);
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      letter-spacing: 0;
-      overflow-x: hidden;
-      width: 100%;
-      max-width: 100%;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    img {
-      display: block;
-      max-width: 100%;
-    }
-
-    code,
-    pre {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-    }
-
-    code {
-      color: var(--accent-deep);
-      font-size: 0.94em;
-    }
-
-    .wrap {
-      width: calc(100% - 40px);
-      max-width: var(--max);
-      margin: 0 auto;
-    }
-
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 40;
-      border-bottom: 1px solid rgba(216, 222, 232, 0.84);
-      background: rgba(246, 247, 249, 0.9);
-      backdrop-filter: blur(16px);
-    }
-
-    .nav {
-      min-height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-    }
-
-    .brand {
-      color: var(--ink);
-      font-size: 17px;
-      font-weight: 760;
-      white-space: nowrap;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 4px;
-      flex-wrap: wrap;
-      min-width: 0;
-    }
-
-    .nav-links a {
-      min-height: 34px;
-      display: inline-flex;
-      align-items: center;
-      padding: 0 10px;
-      border-radius: 6px;
-      color: var(--ink-soft);
-      font-size: 14px;
-      font-weight: 650;
-    }
-
-    .nav-links a:hover,
-    .nav-links a:focus-visible {
-      color: var(--accent-deep);
-      background: var(--accent-soft);
-      outline: none;
-    }
-
-    .hero {
-      padding: 54px 0 30px;
-      border-bottom: 1px solid var(--line);
-      background:
-        linear-gradient(180deg, #ffffff 0%, #f7f9fc 76%, #f6f7f9 100%);
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 0.88fr) minmax(420px, 1.12fr);
-      gap: 42px;
-      align-items: center;
-    }
-
-    .hero-copy,
-    .hero-media,
-    .section-head,
-    .figure-shell,
-    .case,
-    .resource {
-      min-width: 0;
-    }
-
-    .artifact,
-    .artifact *,
-    .figure-shell,
-    .case,
-    .case * {
-      min-width: 0;
-    }
-
-    .eyebrow-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 18px;
-    }
-
-    .tag {
-      min-height: 30px;
-      display: inline-flex;
-      align-items: center;
-      max-width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      padding: 0 10px;
-      background: rgba(255, 255, 255, 0.74);
-      color: var(--ink-soft);
-      font-size: 13px;
-      font-weight: 720;
-      overflow-wrap: anywhere;
-    }
-
-    .tag.strong {
-      border-color: rgba(31, 94, 255, 0.28);
-      background: var(--accent-soft);
-      color: var(--accent-deep);
-    }
-
-    h1,
-    h2,
-    h3,
-    p {
-      margin-top: 0;
-    }
-
-    h1 {
-      margin-bottom: 0;
-      max-width: 840px;
-      font-size: 52px;
-      line-height: 1.02;
-      font-weight: 790;
-      letter-spacing: 0;
-      overflow-wrap: break-word;
-    }
-
-    .lead {
-      margin: 22px 0 0;
-      max-width: 720px;
-      color: var(--ink-soft);
-      font-size: 18px;
-      line-height: 1.68;
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 28px;
-    }
-
-    .button {
-      min-height: 42px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--line-strong);
-      border-radius: 8px;
-      padding: 0 15px;
-      background: var(--paper);
-      color: var(--ink);
-      font-size: 14px;
-      font-weight: 760;
-      box-shadow: 0 10px 24px rgba(16, 24, 40, 0.06);
-      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease;
-    }
-
-    .button.primary {
-      border-color: var(--accent);
-      background: var(--accent);
-      color: white;
-      box-shadow: 0 14px 30px rgba(31, 94, 255, 0.18);
-    }
-
-    .button:hover,
-    .button:focus-visible {
-      transform: translateY(-2px);
-      border-color: var(--accent);
-      box-shadow: 0 18px 36px rgba(16, 24, 40, 0.11);
-      outline: none;
-    }
-
-    .hero-metrics {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 1px;
-      margin-top: 34px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      overflow: hidden;
-      background: var(--line);
-    }
-
-    .metric {
-      min-height: 92px;
-      padding: 16px;
-      background: rgba(255, 255, 255, 0.84);
-    }
-
-    .metric strong {
-      display: block;
-      color: var(--ink);
-      font-size: 28px;
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-
-    .metric span {
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 650;
-      line-height: 1.35;
-    }
-
-    .artifact {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: rgba(255, 255, 255, 0.76);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .artifact-top {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      background: var(--line);
-    }
-
-    .artifact-figure {
-      min-width: 0;
-      margin: 0;
-      background: var(--paper);
-    }
-
-    .artifact-figure img {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-      object-position: center;
-    }
-
-    .cap {
-      min-height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      border-bottom: 1px solid var(--line);
-      padding: 0 12px;
-      color: var(--ink-soft);
-      font-size: 12px;
-      font-weight: 760;
-      text-transform: uppercase;
-      min-width: 0;
-    }
-
-    .cap span,
-    .figure-label span,
-    .figure-label small,
-    .case-label span {
-      min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .cap span:last-child {
-      color: var(--faint);
-      font-weight: 700;
-      text-transform: none;
-    }
-
-    .artifact-code {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 1px;
-      background: var(--line);
-      border-top: 1px solid var(--line);
-    }
-
-    .code-step {
-      min-height: 118px;
-      padding: 16px;
-      background: var(--paper-soft);
-    }
-
-    .code-step b {
-      display: block;
-      margin-bottom: 9px;
-      font-size: 14px;
-      line-height: 1.25;
-    }
-
-    .code-step span {
-      display: block;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .terminal {
-      background: var(--code);
-      color: #d7e2ff;
-      padding: 16px;
-    }
-
-    .terminal-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 12px;
-      color: #8ea4d9;
-      font-size: 12px;
-      font-weight: 760;
-    }
-
-    .dots {
-      display: inline-flex;
-      gap: 6px;
-      align-items: center;
-    }
-
-    .dots i {
-      width: 9px;
-      height: 9px;
-      display: block;
-      border-radius: 999px;
-      background: #5b6b8f;
-    }
-
-    .terminal pre {
-      margin: 0;
-      max-height: 160px;
-      overflow: hidden;
-      color: #d7e2ff;
-      font-size: 12px;
-      line-height: 1.55;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-      word-break: break-word;
-    }
-
-    section {
-      padding: 78px 0;
-    }
-
-    section + section {
-      border-top: 1px solid var(--line);
-    }
-
-    .section-head {
-      display: grid;
-      grid-template-columns: minmax(0, 0.9fr) minmax(300px, 0.7fr);
-      gap: 42px;
-      align-items: end;
-      margin-bottom: 28px;
-    }
-
-    .eyebrow {
-      margin: 0 0 10px;
-      color: var(--accent-deep);
-      font-size: 12px;
-      font-weight: 790;
-      text-transform: uppercase;
-    }
-
-    h2 {
-      margin-bottom: 0;
-      font-size: 34px;
-      line-height: 1.12;
-      letter-spacing: 0;
-      max-width: 760px;
-    }
-
-    .section-copy {
-      margin: 0;
-      color: var(--ink-soft);
-      font-size: 16px;
-      line-height: 1.65;
-      max-width: 560px;
-    }
-
-    .figure-shell {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--paper);
-      overflow: hidden;
-      box-shadow: 0 18px 48px rgba(16, 24, 40, 0.06);
-    }
-
-    .figure-label {
-      min-height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      border-bottom: 1px solid var(--line);
-      padding: 0 14px;
-      color: var(--ink-soft);
-      font-size: 13px;
-      font-weight: 760;
-      min-width: 0;
-    }
-
-    .figure-label small {
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 650;
-    }
-
-    .figure-shell img {
-      width: 100%;
-      background: white;
-    }
-
-    .problem-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
-      gap: 28px;
-      align-items: stretch;
-    }
-
-    .problem-grid .figure-shell img {
-      aspect-ratio: 1530 / 793;
-      object-fit: contain;
-    }
-
-    .argument {
-      display: grid;
-      gap: 1px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      overflow: hidden;
-      background: var(--line);
-    }
-
-    .argument-item {
-      padding: 22px;
-      background: var(--paper);
-    }
-
-    .argument-item h3 {
-      margin-bottom: 10px;
-      font-size: 18px;
-      line-height: 1.24;
-    }
-
-    .argument-item p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.62;
-    }
-
-    .argument-item.bad h3 {
-      color: var(--warn);
-    }
-
-    .argument-item.good h3 {
-      color: var(--good);
-    }
-
-    .tasks {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      margin-top: 16px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      overflow: hidden;
-      background: var(--line);
-    }
-
-    .task {
-      padding: 22px;
-      background: var(--paper);
-    }
-
-    .task small {
-      display: inline-flex;
-      min-height: 26px;
-      align-items: center;
-      margin-bottom: 12px;
-      border: 1px solid rgba(31, 94, 255, 0.28);
-      border-radius: 6px;
-      padding: 0 8px;
-      color: var(--accent-deep);
-      background: var(--accent-soft);
-      font-weight: 780;
-    }
-
-    .task h3 {
-      margin-bottom: 8px;
-      font-size: 20px;
-      line-height: 1.24;
-    }
-
-    .task p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.6;
-    }
-
-    .data-phases {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1px;
-      margin-top: 16px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      overflow: hidden;
-      background: var(--line);
-    }
-
-    .phase {
-      min-height: 156px;
-      padding: 22px;
-      background: var(--paper);
-    }
-
-    .phase b {
-      display: block;
-      margin-bottom: 10px;
-      font-size: 17px;
-      line-height: 1.24;
-    }
-
-    .phase span {
-      display: block;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.6;
-    }
-
-    .findings {
-      background: #ffffff;
-    }
-
-    .finding-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      overflow: hidden;
-      background: var(--line);
-    }
-
-    .finding {
-      min-height: 252px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 24px;
-      background: var(--paper-soft);
-    }
-
-    .finding .num {
-      color: var(--accent);
-      font-size: 38px;
-      line-height: 1;
-      font-weight: 800;
-      margin-bottom: 20px;
-    }
-
-    .finding h3 {
-      margin-bottom: 10px;
-      font-size: 20px;
-      line-height: 1.26;
-    }
-
-    .finding p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.62;
-    }
-
-    .metric-row {
-      margin-top: 22px;
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 1px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      overflow: hidden;
-      background: var(--line);
-    }
-
-    .metric-chip {
-      min-height: 86px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 5px;
-      padding: 14px;
-      background: #fff;
-    }
-
-    .metric-chip b {
-      color: var(--ink);
-      font-size: 15px;
-    }
-
-    .metric-chip span {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.35;
-    }
-
-    .case-list {
-      display: grid;
-      gap: 24px;
-    }
-
-    .case {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      overflow: hidden;
-      background: var(--paper);
-      box-shadow: 0 18px 52px rgba(16, 24, 40, 0.06);
-    }
-
-    .case-head {
-      min-height: 66px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      border-bottom: 1px solid var(--line);
-      padding: 16px;
-    }
-
-    .case-head h3 {
-      margin: 0;
-      font-size: 18px;
-      line-height: 1.28;
-    }
-
-    .case-head span {
-      flex: 0 0 auto;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .case-images {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      background: var(--line);
-    }
-
-    .case-panel {
-      min-width: 0;
-      background: var(--paper-soft);
-    }
-
-    .case-panel img {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      object-fit: contain;
-      background: white;
-    }
-
-    .case-label {
-      min-height: 38px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      border-bottom: 1px solid var(--line);
-      padding: 0 12px;
-      color: var(--ink-soft);
-      font-size: 12px;
-      font-weight: 780;
-      text-transform: uppercase;
-      min-width: 0;
-    }
-
-    .case-label span:last-child {
-      color: var(--faint);
-      font-weight: 700;
-      text-transform: none;
-    }
-
-    .resource-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 1px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      overflow: hidden;
-      background: var(--line);
-    }
-
-    .resource {
-      display: block;
-      min-height: 188px;
-      padding: 22px;
-      background: var(--paper);
-      transition: background 160ms ease, color 160ms ease;
-    }
-
-    .resource:hover,
-    .resource:focus-visible {
-      background: var(--accent-soft);
-      outline: none;
-    }
-
-    .resource small {
-      display: block;
-      margin-bottom: 24px;
-      color: var(--accent-deep);
-      font-size: 12px;
-      font-weight: 790;
-      text-transform: uppercase;
-    }
-
-    .resource h3 {
-      margin-bottom: 10px;
-      font-size: 18px;
-      line-height: 1.24;
-    }
-
-    .resource p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.55;
-    }
-
-    .citation {
-      margin-top: 24px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      overflow: hidden;
-      background: var(--code);
-      box-shadow: 0 18px 52px rgba(16, 24, 40, 0.08);
-    }
-
-    .citation .terminal-head {
-      margin: 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 14px 16px;
-      color: #c6d3f4;
-    }
-
-    .citation pre {
-      margin: 0;
-      overflow-x: hidden;
-      padding: 18px;
-      color: #e7ecff;
-      font-size: 13px;
-      line-height: 1.58;
-      white-space: pre-wrap;
-      overflow-wrap: anywhere;
-    }
-
-    .footer {
-      border-top: 1px solid var(--line);
-      padding: 26px 0;
-      color: var(--muted);
-      background: var(--paper);
-      font-size: 14px;
-    }
-
-    .reveal {
-      opacity: 1;
-      transform: none;
-      transition: opacity 520ms ease, transform 520ms ease;
-    }
-
-    .reveal.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    @media (max-width: 1040px) {
-      h1 {
-        font-size: 44px;
-      }
-
-      h2 {
-        font-size: 30px;
-      }
-
-      .hero-grid,
-      .problem-grid,
-      .section-head {
-        grid-template-columns: 1fr;
-      }
-
-      .section-head {
-        gap: 14px;
-        align-items: start;
-      }
-
-      .resource-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .metric-row {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 760px) {
-      .wrap {
-        width: calc(100% - 28px);
-        max-width: var(--max);
-      }
-
-      .nav {
-        min-height: auto;
-        align-items: flex-start;
-        flex-direction: column;
-        padding: 14px 0;
-        gap: 12px;
-      }
-
-      .nav-links {
-        justify-content: flex-start;
-        width: 100%;
-      }
-
-      .nav-links a {
-        padding: 0 8px;
-        font-size: 13px;
-      }
-
-      .hero {
-        padding-top: 30px;
-      }
-
-      h1 {
-        font-size: 34px;
-        line-height: 1.08;
-        max-width: 100%;
-        overflow-wrap: anywhere;
-      }
-
-      h2 {
-        font-size: 26px;
-      }
-
-      .lead {
-        font-size: 16px;
-        max-width: 100%;
-        overflow-wrap: anywhere;
-      }
-
-      .eyebrow-row {
-        align-items: flex-start;
-      }
-
-      .tag {
-        white-space: normal;
-      }
-
-      .hero-metrics,
-      .artifact-top,
-      .artifact-code,
-      .tasks,
-      .data-phases,
-      .finding-grid,
-      .case-images,
-      .resource-grid,
-      .metric-row {
-        grid-template-columns: 1fr;
-      }
-
-      .metric {
-        min-height: auto;
-      }
-
-      .case-head {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      .artifact-figure img {
-        object-fit: contain;
-      }
-
-      .terminal pre {
-        font-size: 11px;
-      }
-
-      section {
-        padding: 58px 0;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html {
-        scroll-behavior: auto;
-      }
-
-      .button,
-      .reveal,
-      .resource {
-        transition: none;
-      }
-
-      .reveal {
-        opacity: 1;
-        transform: none;
-      }
-    }
-  </style>
+  <title>VCG-Bench — Executable Diagram Generation &amp; Editing</title>
+  <meta name="description" content="VCG-Bench evaluates whether vision-language models can reconstruct executable mxGraph diagrams from pixels and edit known diagram structure with natural-language instructions.">
+  <meta name="theme-color" content="#08111f">
+  <meta property="og:title" content="VCG-Bench">
+  <meta property="og:description" content="A visual-centric benchmark for executable diagram reconstruction and instruction-driven editing.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sxy1499894281.github.io/VCG-Bench/">
+  <meta property="og:image" content="https://sxy1499894281.github.io/VCG-Bench/assets/paper/fig01-comparison.webp">
+  <link rel="canonical" href="https://sxy1499894281.github.io/VCG-Bench/">
+  <link rel="stylesheet" href="site.css?v=20260714-paper2">
+  <script>document.documentElement.classList.add('js');window.setTimeout(function(){if(!document.documentElement.classList.contains('js-ready'))document.documentElement.classList.remove('js');},3000);</script>
+  <script src="site.js?v=20260714-paper2" defer></script>
 </head>
 <body>
-  <header class="topbar">
-    <div class="wrap nav">
-      <a class="brand" href="#top" aria-label="VCG-Bench home">VCG-Bench</a>
-      <nav class="nav-links" aria-label="Primary navigation">
-        <a href="#problem">Problem</a>
-        <a href="#framework">Framework</a>
-        <a href="#data">Data</a>
-        <a href="#findings">Findings</a>
-        <a href="#skill">Skill Cases</a>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+
+  <header class="site-header" data-header>
+    <div class="shell nav-shell">
+      <a class="brand" href="#top" aria-label="VCG-Bench home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span>VCG<span class="brand-slash">/</span>Bench</span>
+      </a>
+
+      <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-navigation">
+        <span class="sr-only">Toggle navigation</span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+
+      <nav class="site-nav" id="site-navigation" aria-label="Primary navigation">
+        <a href="#tasks">Tasks</a>
+        <a href="#dataset">Dataset</a>
+        <a href="#results">Results</a>
+        <a href="#ecosystem">Ecosystem</a>
         <a href="#resources">Resources</a>
       </nav>
+
+      <a class="nav-cta" href="https://arxiv.org/abs/2605.15677" target="_blank" rel="noreferrer">
+        Read the paper <span aria-hidden="true">↗</span>
+      </a>
     </div>
   </header>
 
-  <main id="top">
-    <section class="hero">
-      <div class="wrap hero-grid">
+  <main id="main-content">
+    <section class="hero" id="top">
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="hero-glow hero-glow-a" aria-hidden="true"></div>
+      <div class="hero-glow hero-glow-b" aria-hidden="true"></div>
+
+      <div class="shell hero-shell">
         <div class="hero-copy reveal">
-          <div class="eyebrow-row">
-            <span class="tag strong">Accepted at ICML 2026</span>
-            <span class="tag">arXiv:2605.15677</span>
-            <span class="tag">Diagram-as-Code</span>
+          <div class="hero-meta">
+            <span class="status-dot" aria-hidden="true"></span>
+            <span>ICML 2026</span>
+            <span class="meta-divider" aria-hidden="true"></span>
+            <span>arXiv:2605.15677</span>
           </div>
-          <h1>VCG-Bench: Towards A Unified Visual-Centric Benchmark for Structured Generation and Editing</h1>
-          <p class="lead">
-            Synthetic data and evaluation for executable, editable diagram generation and instruction editing with
-            <code>mxGraph</code> XML.
-          </p>
-          <div class="actions" aria-label="Project links">
-            <a class="button primary" href="https://arxiv.org/abs/2605.15677">Paper</a>
-            <a class="button" href="https://github.com/sxy1499894281/VCG-Bench">Code</a>
-            <a class="button" href="https://huggingface.co/datasets/sxy1620348809/VCG-Bench">Dataset</a>
-            <a class="button" href="https://github.com/sxy1499894281/drawio-reconstruction">Skill</a>
+
+          <p class="eyebrow">VCG-Bench · Diagram-as-Code</p>
+          <h1>Can models recover <em>editable structure</em> from pixels?</h1>
+          <p class="hero-lead">VCG-Bench separates two capabilities that visual benchmarks often conflate: reconstructing executable mxGraph XML from a diagram image and structured caption, and modifying known structure through natural-language instructions.</p>
+
+          <div class="hero-actions">
+            <a class="button button-primary" href="https://arxiv.org/abs/2605.15677" target="_blank" rel="noreferrer">
+              Read the paper <span aria-hidden="true">↗</span>
+            </a>
+            <a class="button button-ghost" href="https://github.com/sxy1499894281/VCG-Bench" target="_blank" rel="noreferrer">
+              Benchmark code <span aria-hidden="true">↗</span>
+            </a>
+            <a class="text-link hero-data-link" href="https://huggingface.co/datasets/sxy1620348809/VCG-Bench" target="_blank" rel="noreferrer">
+              Dataset on Hugging Face <span aria-hidden="true">↗</span>
+            </a>
           </div>
-          <div class="hero-metrics" aria-label="VCG-Bench summary statistics">
-            <div class="metric"><strong>1,449</strong><span>released diagram samples</span></div>
-            <div class="metric"><strong>6</strong><span>coarse diagram domains</span></div>
-            <div class="metric"><strong>15</strong><span>fine-grained sub-domains</span></div>
-            <div class="metric"><strong>2</strong><span>generation and editing tasks</span></div>
+
+          <div class="paper-identity">
+            <p class="paper-title">Towards A Unified Visual-Centric Benchmark for Structured Generation and Editing</p>
+            <p class="paper-authors">Xiaoyan Su · Peijie Dong · Zhenheng Tang · Song Tang · Yuyao Zhai · Kaitao Lin · Liang Chen · Yuhang Gai · Yuyu Luo · Qiang Wang · Xiaowen Chu</p>
           </div>
         </div>
 
-        <div class="hero-media reveal">
-          <div class="artifact" aria-label="Diagram-as-code preview">
-            <div class="artifact-top">
-              <figure class="artifact-figure">
-                <figcaption class="cap"><span>Source Diagram</span><span>Raster image</span></figcaption>
-                <img src="assets/cases/data_lake_original.png" alt="Original data lake architecture diagram">
-              </figure>
-              <figure class="artifact-figure">
-                <figcaption class="cap"><span>Structured Output</span><span>Draw.io export</span></figcaption>
-                <img src="assets/cases/data_lake_drawio.png" alt="Reconstructed Draw.io data lake diagram">
-              </figure>
-            </div>
-            <div class="artifact-code">
-              <div class="code-step">
-                <b>Vision-to-XML</b>
-                <span>Generate editable graph structure from a raster diagram and structured visual description.</span>
-              </div>
-              <div class="code-step">
-                <b>Render and Verify</b>
-                <span>Parse, render, and evaluate outputs with execution, visual, and semantic checks.</span>
-              </div>
-              <div class="code-step">
-                <b>Instruction Editing</b>
-                <span>Apply localized XML patches instead of regenerating pixels from scratch.</span>
-              </div>
-            </div>
-            <div class="terminal">
-              <div class="terminal-head">
-                <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-                <span>mxGraph XML</span>
-              </div>
-              <pre>&lt;mxGraphModel&gt;
-  &lt;root&gt;
-    &lt;mxCell id="node_agent" value="Pipeline Orchestration Agents" vertex="1" /&gt;
-    &lt;mxCell id="edge_1" source="data_lake" target="node_agent" edge="1" /&gt;
-  &lt;/root&gt;
-&lt;/mxGraphModel&gt;</pre>
-            </div>
+        <div class="hero-visual reveal" style="--delay: 120ms;">
+          <div class="visual-topline">
+            <span><b>01</b> Paper overview</span>
+            <span class="visual-state"><i aria-hidden="true"></i> Executable output</span>
+          </div>
+          <button class="image-trigger hero-image-trigger" type="button" data-lightbox-src="assets/paper/fig01-comparison.webp" data-lightbox-alt="Paper overview comparing visual input, structured generation, and instruction-driven editing" data-lightbox-caption="Figure 1 · VCG-Bench evaluates executable structured generation and editing rather than pixel-only similarity.">
+            <img src="assets/paper/fig01-comparison.webp" width="1530" height="793" alt="Paper overview comparing diagram images with editable structured outputs">
+            <span class="zoom-label">View figure <span aria-hidden="true">↗</span></span>
+          </button>
+          <div class="visual-flow" aria-label="Benchmark flow">
+            <span>Raster + caption</span>
+            <i aria-hidden="true">→</i>
+            <span>mxGraph XML</span>
+            <i aria-hidden="true">→</i>
+            <span>Editable diagram</span>
           </div>
         </div>
       </div>
-    </section>
 
-    <section id="problem">
-      <div class="wrap">
-        <div class="section-head reveal">
-          <div>
-            <p class="eyebrow">Problem</p>
-            <h2>Pixel editing produces plausible diagrams, but professional diagram workflows need structure.</h2>
-          </div>
-          <p class="section-copy">
-            VCG-Bench shifts the unit of generation from raster pixels to executable <code>mxGraph</code> code, where nodes,
-            edges, text, styles, and geometry can be inspected and edited.
-          </p>
-        </div>
-        <div class="problem-grid">
-          <div class="figure-shell reveal">
-            <div class="figure-label">
-              <span>Diagram-as-Pixels vs Diagram-as-Code</span>
-              <small>Paper overview figure</small>
-            </div>
-            <img src="assets/figures/teaser_symbol_logic.png" alt="Comparison between pixel editing and diagram-as-code editing">
-          </div>
-          <div class="argument reveal">
-            <article class="argument-item bad">
-              <h3>Diagram-as-Pixels</h3>
-              <p>Raster editing is stochastic and unstructured. It can blur lines, deform text, shift scale, break connectors, and hallucinate visual elements.</p>
-            </article>
-            <article class="argument-item good">
-              <h3>Diagram-as-Code</h3>
-              <p>Symbolic XML keeps each diagram executable and editable. Local changes target explicit graph elements instead of re-sampling the whole image.</p>
-            </article>
-            <article class="argument-item">
-              <h3>Benchmark Target</h3>
-              <p>The benchmark separates visual structure recovery from code-level editing, making each capability measurable instead of blending them into one image score.</p>
-            </article>
-          </div>
-        </div>
+      <div class="shell hero-stats reveal" style="--delay: 220ms;" aria-label="Benchmark at a glance">
+        <div><strong>1,449</strong><span>verified diagrams</span></div>
+        <div><strong>6 / 15</strong><span>domains / subdomains</span></div>
+        <div><strong>14</strong><span>atomic edit types</span></div>
+        <div><strong>2</strong><span>complementary benchmark tasks</span></div>
       </div>
     </section>
 
-    <section id="framework">
-      <div class="wrap">
-        <div class="section-head reveal">
-          <div>
-            <p class="eyebrow">Framework</p>
-            <h2>A unified benchmark for generation and editing around editable Draw.io diagrams.</h2>
-          </div>
-          <p class="section-copy">
-            The framework evaluates whether models can create valid <code>mxGraph</code> from diagrams, then use that structure for deterministic instruction edits.
-          </p>
+    <section class="section section-intro" id="contributions">
+      <div class="shell">
+        <div class="section-heading heading-wide reveal">
+          <p class="section-kicker"><span>01</span> Research contribution</p>
+          <h2>A benchmark for diagrams that must <em>work</em>—not just look right.</h2>
+          <p>Diagram understanding becomes useful when the result remains executable, editable, and structurally faithful. VCG-Bench turns that requirement into a reproducible evaluation protocol.</p>
         </div>
-        <div class="figure-shell reveal">
-          <div class="figure-label">
-            <span>VCG-Bench framework</span>
-            <small>Required project figure</small>
-          </div>
-          <img src="assets/figures/framework_official.png" alt="VCG-Bench framework overview">
-        </div>
-        <div class="tasks reveal">
-          <article class="task">
-            <small>Task 1</small>
-            <h3>Vision-to-XML Generation</h3>
-            <p>Given a raster diagram image and structured caption, generate valid <code>mxGraph</code> XML that can render into a faithful diagram.</p>
-          </article>
-          <article class="task">
-            <small>Task 2</small>
-            <h3>Instruction-based XML Editing</h3>
-            <p>Given existing XML, rendered context, and a natural-language instruction, predict localized XML patches for controlled edits.</p>
-          </article>
-        </div>
-      </div>
-    </section>
 
-    <section id="data">
-      <div class="wrap">
-        <div class="section-head reveal">
-          <div>
-            <p class="eyebrow">Synthetic Data Pipeline</p>
-            <h2>A machine-generation and human-verification loop for cold-starting open-source models.</h2>
-          </div>
-          <p class="section-copy">
-            VCG-Bench constructs Diagram-as-Code data by collecting candidate diagrams, synthesizing descriptions and XML, rendering candidates, and filtering for valid, visually aligned examples.
-          </p>
-        </div>
-        <div class="figure-shell reveal">
-          <div class="figure-label">
-            <span>Task 1 and Task 2 data generation</span>
-            <small>Synthetic data framework</small>
-          </div>
-          <img src="assets/figures/data_pipeline.png" alt="VCG-Bench synthetic data generation pipeline">
-        </div>
-        <div class="data-phases reveal">
-          <div class="phase">
-            <b>Candidate Collection</b>
-            <span>Start from diverse diagrams spanning academic, software, business, management, UIUX, and general domains.</span>
-          </div>
-          <div class="phase">
-            <b>XML Synthesis</b>
-            <span>Generate structured captions and candidate <code>mxGraph</code> XML, then render the code back into diagrams for checks.</span>
-          </div>
-          <div class="phase">
-            <b>Verification</b>
-            <span>Use parser validation, rendering verification, visual similarity, and human review to keep high-quality samples.</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="findings" class="findings">
-      <div class="wrap">
-        <div class="section-head reveal">
-          <div>
-            <p class="eyebrow">Benchmark Findings</p>
-            <h2>Vision-to-code is the bottleneck; code-to-code editing becomes much more stable once XML exists.</h2>
-          </div>
-          <p class="section-copy">
-            The paper reports execution, visual fidelity, and semantic compliance through ESR, SCS, CodeXQA, SigLIP2, and XDRFR.
-          </p>
-        </div>
-        <div class="finding-grid reveal">
-          <article class="finding">
+        <div class="contribution-grid">
+          <article class="contribution-card reveal">
+            <span class="card-index">01</span>
             <div>
-              <div class="num">0.9626</div>
-              <h3>Best Task 1 ESR</h3>
+              <h3>Taxonomized diagram data</h3>
+              <p>1,449 quality-controlled diagrams spanning six domains and fifteen subdomains, with rich captions and structural metadata; the public Task 1 release includes 1,444 restored XML files.</p>
             </div>
-            <p>Closed-source systems lead Vision-to-XML generation, while open-source models often fail on executability even when they identify parts of the diagram.</p>
           </article>
-          <article class="finding">
+          <article class="contribution-card reveal" style="--delay: 80ms;">
+            <span class="card-index">02</span>
             <div>
-              <div class="num">0.0000</div>
-              <h3>Open-source ESR failure mode</h3>
+              <h3>Generation and editing, separated</h3>
+              <p>Task 1 measures structure recovery from visual evidence. Task 2 measures reliable modification when the source structure is already available.</p>
             </div>
-            <p>Some open models collapse on valid Draw.io generation, showing that visual recognition alone is not enough for executable structured output.</p>
           </article>
-          <article class="finding">
+          <article class="contribution-card reveal" style="--delay: 160ms;">
+            <span class="card-index">03</span>
             <div>
-              <div class="num">0.9405</div>
-              <h3>Best Task 2 XDRFR</h3>
-            </div>
-            <p>When the diagram is already available as XML, localized instruction editing is far more controllable and easier to verify.</p>
-          </article>
-        </div>
-        <div class="metric-row reveal" aria-label="Evaluation metrics">
-          <div class="metric-chip"><b>ESR</b><span>Execution success for parseable, renderable XML.</span></div>
-          <div class="metric-chip"><b>SCS</b><span>Style and layout consistency against the diagram.</span></div>
-          <div class="metric-chip"><b>CodeXQA</b><span>XML-backed semantic fidelity for Task 1.</span></div>
-          <div class="metric-chip"><b>SigLIP2</b><span>Embedding similarity between source and render.</span></div>
-          <div class="metric-chip"><b>XDRFR</b><span>XML-grounded requirement following for Task 2.</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="skill">
-      <div class="wrap">
-        <div class="section-head reveal">
-          <div>
-            <p class="eyebrow">Skill + Codex Reconstruction Cases</p>
-            <h2>Practical diagram reconstruction examples from the companion skill workflow.</h2>
-          </div>
-          <p class="section-copy">
-            These examples are reconstructed with the <code>drawio-reconstruction</code> skill using Codex GPT-5.5 xhigh. The right-hand image in each pair is the Draw.io export.
-          </p>
-        </div>
-        <div class="case-list">
-          <article class="case reveal">
-            <div class="case-head">
-              <h3>AI Agent Architecture for Unified Data Management</h3>
-              <span>Data lake architecture</span>
-            </div>
-            <div class="case-images">
-              <div class="case-panel">
-                <div class="case-label"><span>Original</span><span>PNG</span></div>
-                <img src="assets/cases/data_lake_original.png" alt="Original data lake architecture diagram">
-              </div>
-              <div class="case-panel">
-                <div class="case-label"><span>Reconstructed</span><span>Draw.io export</span></div>
-                <img src="assets/cases/data_lake_drawio.png" alt="Reconstructed data lake architecture diagram">
-              </div>
-            </div>
-          </article>
-
-          <article class="case reveal">
-            <div class="case-head">
-              <h3>Running Example: Data Management</h3>
-              <span>Workflow slide</span>
-            </div>
-            <div class="case-images">
-              <div class="case-panel">
-                <div class="case-label"><span>Original</span><span>PNG</span></div>
-                <img src="assets/cases/data_man_original.png" alt="Original data management workflow diagram">
-              </div>
-              <div class="case-panel">
-                <div class="case-label"><span>Reconstructed</span><span>Draw.io export</span></div>
-                <img src="assets/cases/data_man_drawio.png" alt="Reconstructed data management workflow diagram">
-              </div>
-            </div>
-          </article>
-
-          <article class="case reveal">
-            <div class="case-head">
-              <h3>Materials Science Workflow</h3>
-              <span>Scientific process diagram</span>
-            </div>
-            <div class="case-images">
-              <div class="case-panel">
-                <div class="case-label"><span>Original</span><span>PNG</span></div>
-                <img src="assets/cases/data_sci2_original.png" alt="Original materials science workflow diagram">
-              </div>
-              <div class="case-panel">
-                <div class="case-label"><span>Reconstructed</span><span>Draw.io export</span></div>
-                <img src="assets/cases/data_sci2_drawio.png" alt="Reconstructed materials science workflow diagram">
-              </div>
+              <h3>More than visual resemblance</h3>
+              <p>Executability, structural correctness, semantic relations, visual similarity, and patch fidelity expose different—and actionable—failure modes.</p>
             </div>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="resources">
-      <div class="wrap">
-        <div class="section-head reveal">
+    <section class="section section-tasks" id="tasks">
+      <div class="shell">
+        <div class="section-heading split-heading reveal">
           <div>
-            <p class="eyebrow">Resources</p>
-            <h2>Paper, code, dataset, skill, and citation.</h2>
+            <p class="section-kicker"><span>02</span> Benchmark design</p>
+            <h2>Two capabilities.<br><em>One executable constraint.</em></h2>
           </div>
-          <p class="section-copy">
-            The VCG-Bench code release is under MIT. The public dataset is hosted on Hugging Face under CC BY 4.0.
-          </p>
+          <p>The tasks are complementary but evaluated independently. A model may be excellent at editing valid XML and still fail to infer that XML from pixels.</p>
         </div>
-        <div class="resource-grid reveal">
-          <a class="resource" href="https://arxiv.org/abs/2605.15677">
-            <small>Paper</small>
-            <h3>arXiv:2605.15677</h3>
-            <p>Read the ICML 2026 paper and full benchmark definition.</p>
-          </a>
-          <a class="resource" href="https://github.com/sxy1499894281/VCG-Bench">
-            <small>Code</small>
-            <h3>VCG-Bench</h3>
-            <p>Generation, rendering, evaluation, notebooks, and examples.</p>
-          </a>
-          <a class="resource" href="https://huggingface.co/datasets/sxy1620348809/VCG-Bench">
-            <small>Dataset</small>
-            <h3>Hugging Face</h3>
-            <p>Task 1 dataset release with images, descriptions, and restored XML.</p>
-          </a>
-          <a class="resource" href="https://github.com/sxy1499894281/drawio-reconstruction">
-            <small>Skill</small>
-            <h3>drawio-reconstruction</h3>
-            <p>Codex skill and helper scripts for reconstructing diagrams into editable Draw.io files.</p>
-          </a>
-        </div>
-        <div class="citation reveal">
-          <div class="terminal-head">
-            <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
-            <span>BibTeX</span>
+
+        <figure class="paper-figure paper-figure-wide reveal">
+          <div class="figure-header">
+            <span>Figure 2</span>
+            <span>Benchmark framework</span>
           </div>
-          <pre>@misc{su2026vcgbenchunifiedvisualcentricbenchmark,
-      title={VCG-Bench: Towards A Unified Visual-Centric Benchmark for Structured Generation and Editing},
-      author={Xiaoyan Su and Peijie Dong and Zhenheng Tang and Song Tang and Yuyao Zhai and Kaitao Lin and Liang Chen and Gai Yuhang and Yuyu Luo and Qiang Wang and Xiaowen Chu},
-      year={2026},
-      eprint={2605.15677},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL},
-      url={https://arxiv.org/abs/2605.15677},
-}</pre>
+          <button class="image-trigger" type="button" data-lightbox-src="assets/paper/fig02-framework.webp" data-lightbox-alt="VCG-Bench framework showing the generation and instruction-editing tasks" data-lightbox-caption="Figure 2 · The VCG-Bench framework evaluates reconstruction and instruction-driven editing as distinct capabilities.">
+            <img src="assets/paper/fig02-framework.webp" width="1865" height="869" alt="VCG-Bench framework for structured diagram generation and editing" loading="lazy">
+            <span class="zoom-label zoom-label-light">Expand figure <span aria-hidden="true">↗</span></span>
+          </button>
+          <figcaption>VCG-Bench tests whether visual-centric models can produce valid diagram programs and modify them while preserving untouched structure.</figcaption>
+        </figure>
+
+        <div class="task-grid">
+          <article class="task-card task-card-blue reveal">
+            <div class="task-number">Task 01</div>
+            <div class="task-title-row">
+              <p class="task-label">Visual → Structure</p>
+              <span>Reconstruction</span>
+            </div>
+            <h3>Recover the diagram program.</h3>
+            <p>Given a raster image and a structured caption, generate complete, executable <code>&lt;mxGraphModel&gt;</code> XML that preserves topology, layout, text, and style.</p>
+            <div class="io-flow" aria-label="Task one input and output">
+              <div><small>Input</small><strong>Image + caption</strong></div>
+              <i aria-hidden="true">→</i>
+              <div><small>Output</small><strong>Complete XML</strong></div>
+            </div>
+            <p class="task-note"><span>Protocol note</span> Image + structured caption is the main setting; image-only reconstruction is reported as a harder ablation.</p>
+          </article>
+
+          <article class="task-card task-card-cyan reveal" style="--delay: 100ms;">
+            <div class="task-number">Task 02</div>
+            <div class="task-title-row">
+              <p class="task-label">Structure → Patch</p>
+              <span>Editing</span>
+            </div>
+            <h3>Change only what was requested.</h3>
+            <p>Given source XML, its rendering, and an instruction, return a JSON differential patch containing original and modified XML fragments. A deterministic applier performs the edit.</p>
+            <div class="io-flow" aria-label="Task two input and output">
+              <div><small>Input</small><strong>XML + image + instruction</strong></div>
+              <i aria-hidden="true">→</i>
+              <div><small>Output</small><strong>JSON XML patch</strong></div>
+            </div>
+            <p class="task-note"><span>Protocol note</span> 1,005 instructions cover 14 atomic edit categories at Easy, Medium, and Hard composition levels.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-dataset" id="dataset">
+      <div class="shell">
+        <div class="dataset-intro reveal">
+          <div class="dataset-big-number">
+            <span>5,000+</span>
+            <small>candidate diagrams</small>
+          </div>
+          <div class="dataset-arrow" aria-hidden="true">→</div>
+          <div class="dataset-big-number dataset-final-number">
+            <span>1,449</span>
+            <small>verified benchmark samples</small>
+          </div>
+          <div class="dataset-copy">
+            <p class="section-kicker"><span>03</span> Dataset &amp; construction</p>
+            <h2>Broad coverage, filtered for executable quality.</h2>
+            <p>Template libraries, research papers, anonymized enterprise artifacts, and permissively licensed web sources are normalized into a consistent mxGraph representation and verified through automated and human checks.</p>
+          </div>
+        </div>
+
+        <figure class="paper-figure pipeline-figure reveal">
+          <div class="figure-header">
+            <span>Figure 3</span>
+            <span>Data synthesis &amp; verification pipeline</span>
+          </div>
+          <button class="image-trigger" type="button" data-lightbox-src="assets/paper/fig03-data-pipeline.webp" data-lightbox-alt="VCG-Bench data synthesis and quality assurance pipeline" data-lightbox-caption="Figure 3 · Data are normalized, rendered, checked, and manually verified before entering the benchmark.">
+            <img src="assets/paper/fig03-data-pipeline.webp" width="1167" height="402" alt="VCG-Bench data synthesis and quality assurance pipeline" loading="lazy">
+            <span class="zoom-label zoom-label-light">Expand figure <span aria-hidden="true">↗</span></span>
+          </button>
+          <figcaption>Filtering combines parser and rendering checks with OCR, semantic similarity, and manual verification. Reported acceptance rates describe distinct quality checks rather than a single sequential funnel.</figcaption>
+        </figure>
+
+        <div class="dataset-detail-grid">
+          <figure class="paper-figure distribution-figure reveal">
+            <div class="figure-header">
+              <span>Figure 4</span>
+              <span>Dataset distribution</span>
+            </div>
+            <button class="image-trigger" type="button" data-lightbox-src="assets/paper/fig04-dataset-distribution.webp" data-lightbox-alt="Distribution of VCG-Bench diagrams across domains and subdomains" data-lightbox-caption="Figure 4 · VCG-Bench contains 1,449 diagrams across six domains and fifteen subdomains.">
+              <img src="assets/paper/fig04-dataset-distribution.webp" width="2048" height="923" alt="Distribution of diagrams across six domains and fifteen subdomains" loading="lazy">
+              <span class="zoom-label zoom-label-light">Expand figure <span aria-hidden="true">↗</span></span>
+            </button>
+          </figure>
+
+          <div class="taxonomy-panel reveal" style="--delay: 100ms;">
+            <p class="mini-kicker">Coverage map</p>
+            <h3>Six domains. Fifteen subdomains.</h3>
+            <div class="taxonomy-list">
+              <div><span>01</span><p><strong>Academic</strong>Architecture, neural networks, data visualization</p></div>
+              <div><span>02</span><p><strong>Software</strong>UML, sequence, ER diagrams</p></div>
+              <div><span>03</span><p><strong>Business</strong>Product, report, strategy</p></div>
+              <div><span>04</span><p><strong>Management</strong>Gantt, hierarchy, flow</p></div>
+              <div><span>05</span><p><strong>UI/UX</strong>Web and mobile interfaces</p></div>
+              <div><span>06</span><p><strong>General</strong>Mind maps</p></div>
+            </div>
+            <div class="quality-strip">
+              <div><strong>0.85</strong><span>SigLIP2 threshold</span></div>
+              <div><strong>&gt;95%</strong><span>OCR consistency</span></div>
+              <div><strong>2.3</strong><span>avg. manual edits</span></div>
+            </div>
+            <a class="text-link" href="https://github.com/sxy1499894281/VCG-Bench/blob/main/DATA.md" target="_blank" rel="noreferrer">Read the dataset card <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-evaluation" id="evaluation">
+      <div class="shell">
+        <div class="section-heading evaluation-heading reveal">
+          <p class="section-kicker"><span>04</span> Evaluation protocol</p>
+          <div class="evaluation-heading-grid">
+            <h2>How each task is <em>scored.</em></h2>
+            <p>Every output must run first. Then VCG-Bench asks a different, task-specific question: was the source reconstructed correctly, or was the requested edit completed correctly?</p>
+          </div>
+        </div>
+
+        <article class="shared-evaluation-gate reveal">
+          <div class="gate-index"><span>Shared gate</span><strong>00</strong></div>
+          <div class="gate-question">
+            <p class="metric-code">ESR · Execution Success Rate</p>
+            <h3>Can Draw.io open and render the output?</h3>
+            <p>The generated XML must parse successfully and produce a valid rendering before any quality score is calculated.</p>
+          </div>
+          <div class="gate-outcomes" aria-label="Execution gate outcomes">
+            <div class="gate-pass"><span>Pass</span><strong>Continue to task-specific scoring</strong></div>
+            <div class="gate-fail"><span>Fail</span><strong>All downstream metrics = 0</strong></div>
+          </div>
+        </article>
+
+        <div class="evaluation-branch-label reveal" aria-hidden="true">
+          <span>Executable output</span>
+          <i>↓</i>
+        </div>
+
+        <div class="evaluation-task-grid">
+          <article class="evaluation-task-card evaluation-task-reconstruct reveal">
+            <div class="evaluation-task-head">
+              <div><span>Task 01</span><strong>Reconstruction</strong></div>
+              <p>Image + caption → complete XML</p>
+            </div>
+            <h3>Did the model reconstruct the source diagram correctly?</h3>
+            <p class="evaluation-task-intro">Three checks cover appearance, diagram content, and rendered similarity.</p>
+
+            <ol class="metric-check-list">
+              <li>
+                <span class="metric-check-number">01</span>
+                <div><h4>Does the reconstruction look well aligned? <span>SCS</span></h4><p>Judges visual style, layout consistency, and aesthetic quality.</p></div>
+              </li>
+              <li>
+                <span class="metric-check-number">02</span>
+                <div><h4>Are the elements and relationships correct? <span>CodeXQA</span></h4><p>Checks counting, attributes, and connections directly from the XML.</p></div>
+              </li>
+              <li>
+                <span class="metric-check-number">03</span>
+                <div><h4>Does the rendered result resemble the source? <span>SigLIP2</span></h4><p>Measures visual-semantic similarity between the two rendered images.</p></div>
+              </li>
+            </ol>
+          </article>
+
+          <article class="evaluation-task-card evaluation-task-edit reveal" style="--delay: 100ms;">
+            <div class="evaluation-task-head">
+              <div><span>Task 02</span><strong>Instruction editing</strong></div>
+              <p>Source XML + instruction → patch</p>
+            </div>
+            <h3>Did the model make the requested edit correctly?</h3>
+            <p class="evaluation-task-intro">Two checks verify that the result stays polished and satisfies every requested change.</p>
+
+            <ol class="metric-check-list">
+              <li>
+                <span class="metric-check-number">01</span>
+                <div><h4>Was the original style preserved? <span>SCS</span></h4><p>Compares style consistency and aesthetic quality against the pre-edit diagram.</p></div>
+              </li>
+              <li>
+                <span class="metric-check-number">02</span>
+                <div><h4>Were all requested changes completed? <span>XDRFR</span></h4><p>Verifies each decomposed edit requirement directly in the modified XML.</p></div>
+              </li>
+            </ol>
+
+            <p class="evaluation-scope-note"><strong>Why fewer checks?</strong> Task 2 already receives the source XML. It evaluates precise modification—not reconstruction from pixels.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-results" id="results">
+      <div class="results-grid" aria-hidden="true"></div>
+      <div class="shell">
+        <div class="results-lead reveal">
+          <p class="section-kicker section-kicker-dark"><span>05</span> Key findings</p>
+          <h2>The bottleneck is <em>seeing structure</em>—not editing it.</h2>
+          <p>Models can modify valid mxGraph programs with high reliability, yet the same models struggle to infer those programs from visual evidence. The gap is largest for open models and compositionally dense diagrams.</p>
+        </div>
+
+        <div class="result-highlight-grid">
+          <article class="result-highlight reveal">
+            <div class="result-topline"><span>Task 1 · Best evaluated model</span><i>Gemini-3-Pro</i></div>
+            <strong>.9626</strong>
+            <p>Executable Success Rate</p>
+            <dl>
+              <div><dt>SCS</dt><dd>.7790</dd></div>
+              <div><dt>CodeXQA</dt><dd>.9313</dd></div>
+              <div><dt>SigLIP2</dt><dd>.9162</dd></div>
+            </dl>
+          </article>
+
+          <article class="result-highlight result-highlight-cyan reveal" style="--delay: 80ms;">
+            <div class="result-topline"><span>Task 2 · Instruction compliance</span><i>Evaluated range</i></div>
+            <strong>.8873–.9405</strong>
+            <p>XDRFR across evaluated models</p>
+            <dl>
+              <div><dt>ESR range</dt><dd>.9920–.9993</dd></div>
+              <div><dt>Best XDRFR</dt><dd>.9405</dd></div>
+            </dl>
+          </article>
+
+          <article class="result-gap reveal" style="--delay: 160ms;">
+            <p class="mini-kicker">A revealing capability gap</p>
+            <h3>Qwen3-VL-32B</h3>
+            <div class="gap-comparison">
+              <div><span>Reconstruct</span><strong>.0000</strong><small>Task 1 ESR</small></div>
+              <i aria-hidden="true">≠</i>
+              <div><span>Edit</span><strong>.9986</strong><small>Task 2 ESR</small></div>
+            </div>
+            <p>Reliable XML manipulation does not imply reliable visual-to-structure recovery.</p>
+          </article>
+        </div>
+
+        <figure class="paper-figure result-figure reveal">
+          <div class="figure-header figure-header-dark">
+            <span>Figure 5</span>
+            <span>CodeXQA across diagram complexity</span>
+          </div>
+          <button class="image-trigger" type="button" data-lightbox-src="assets/paper/fig05-difficulty-performance.webp" data-lightbox-alt="Task 1 CodeXQA performance across diagram difficulty levels" data-lightbox-caption="Figure 5 · CodeXQA accuracy declines from Easy to Hard across evaluated model families.">
+            <img src="assets/paper/fig05-difficulty-performance.webp" width="3254" height="701" alt="Task 1 CodeXQA performance across diagram complexity tiers" loading="lazy">
+            <span class="zoom-label">Expand figure <span aria-hidden="true">↗</span></span>
+          </button>
+          <figcaption>Each panel reports CodeXQA accuracy for one evaluated model family as diagram complexity increases from Easy to Hard.</figcaption>
+        </figure>
+
+        <div class="finding-notes">
+          <div class="reveal"><span>01</span><p><strong>Counting is the dominant Task 1 failure for evaluated open models.</strong> They omit, duplicate, or merge repeated visual elements.</p></div>
+          <div class="reveal" style="--delay: 70ms;"><span>02</span><p><strong>Captions materially help structure recovery.</strong> In a 100-example ablation, removing them reduced SCS from .805 to .690 and CodeXQA from .930 to .786.</p></div>
+          <div class="reveal" style="--delay: 140ms;"><span>03</span><p><strong>Executability is necessary, not sufficient.</strong> Valid XML can still encode the wrong topology, text, or relationships.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-qualitative" id="qualitative">
+      <div class="shell">
+        <div class="section-heading split-heading reveal">
+          <div>
+            <p class="section-kicker"><span>06</span> Paper examples</p>
+            <h2>Inspect what the metrics <em>cannot summarize.</em></h2>
+          </div>
+          <p>Qualitative results from the paper show both reconstruction behavior and instruction-driven edits. Select a task, then expand the figure for full-resolution inspection.</p>
+        </div>
+
+        <div class="tab-experience reveal" data-tab-group="paper-results">
+          <div class="tab-list" role="tablist" aria-label="Paper qualitative examples">
+            <button id="paper-tab-task1" role="tab" aria-selected="true" aria-controls="paper-panel-task1" tabindex="0" type="button">
+              <span>Task 01</span> Reconstruction examples
+            </button>
+            <button id="paper-tab-task2" role="tab" aria-selected="false" aria-controls="paper-panel-task2" tabindex="-1" type="button">
+              <span>Task 02</span> Editing examples
+            </button>
+          </div>
+
+          <div class="tab-panel" id="paper-panel-task1" role="tabpanel" aria-labelledby="paper-tab-task1">
+            <figure class="paper-figure tabbed-figure">
+              <div class="figure-header"><span>Figure 6</span><span>Task 1 qualitative reconstruction</span></div>
+              <button class="image-trigger" type="button" data-lightbox-src="assets/paper/fig06-task1-qualitative.webp" data-lightbox-alt="Qualitative Task 1 reconstruction examples with SCS and expert rankings" data-lightbox-caption="Figure 6 · Task 1 examples show close agreement between SCS rankings and expert rankings.">
+                <img src="assets/paper/fig06-task1-qualitative.webp" width="1592" height="840" alt="Task 1 reconstruction examples comparing references and model outputs" loading="lazy">
+                <span class="zoom-label zoom-label-light">Expand full figure <span aria-hidden="true">↗</span></span>
+              </button>
+              <figcaption>The ordering produced by the judge-based SCS metric closely follows expert rankings on these qualitative examples.</figcaption>
+            </figure>
+          </div>
+
+          <div class="tab-panel" id="paper-panel-task2" role="tabpanel" aria-labelledby="paper-tab-task2" hidden>
+            <figure class="paper-figure tabbed-figure">
+              <div class="figure-header"><span>Figure 7</span><span>Task 2 qualitative editing</span></div>
+              <button class="image-trigger" type="button" data-lightbox-src="assets/paper/fig07-task2-qualitative.webp" data-lightbox-alt="Qualitative Task 2 instruction editing examples from the VCG-Bench paper" data-lightbox-caption="Figure 7 · Qualitative instruction-editing examples from the VCG-Bench paper.">
+                <img src="assets/paper/fig07-task2-qualitative.webp" width="1884" height="924" alt="Task 2 examples showing source diagrams, instructions, and edited outputs" loading="lazy">
+                <span class="zoom-label zoom-label-light">Expand full figure <span aria-hidden="true">↗</span></span>
+              </button>
+              <figcaption>Edits are evaluated as differential patches so untouched structure can be checked explicitly.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-ecosystem" id="ecosystem">
+      <div class="shell">
+        <div class="ecosystem-heading reveal">
+          <p class="section-kicker"><span>07</span> Project ecosystem</p>
+          <h2>Two complementary workflows.<br><em>Two different promises.</em></h2>
+          <p>The benchmark repository supports the research release and reproducible evaluation. The companion Skill turns the same diagram-as-code principle into a hands-on Codex reconstruction workflow.</p>
+        </div>
+
+        <div class="repo-grid">
+          <article class="repo-card repo-card-research reveal">
+            <div class="repo-card-head">
+              <span class="repo-type">Research release</span>
+              <span class="repo-number">01</span>
+            </div>
+            <p class="repo-name">sxy1499894281 / <strong>VCG-Bench</strong></p>
+            <h3>The paper, benchmark data, synthesis pipeline, and evaluation toolkit.</h3>
+            <ul>
+              <li><span aria-hidden="true">✓</span> 1,449-diagram benchmark and annotations</li>
+              <li><span aria-hidden="true">✓</span> Task 1 and Task 2 evaluation protocols</li>
+              <li><span aria-hidden="true">✓</span> Data construction and evaluation scripts</li>
+            </ul>
+            <div class="repo-actions">
+              <a class="button button-dark" href="https://github.com/sxy1499894281/VCG-Bench" target="_blank" rel="noreferrer">Open benchmark repo <span aria-hidden="true">↗</span></a>
+              <a class="text-link" href="https://huggingface.co/datasets/sxy1620348809/VCG-Bench" target="_blank" rel="noreferrer">Browse dataset <span aria-hidden="true">↗</span></a>
+            </div>
+          </article>
+
+          <article class="repo-card repo-card-skill reveal" style="--delay: 100ms;">
+            <div class="repo-card-head">
+              <span class="repo-type">Companion workflow</span>
+              <span class="repo-number">02</span>
+            </div>
+            <p class="repo-name">sxy1499894281 / <strong>drawio-reconstruction-skill</strong></p>
+            <h3>A reusable Codex Skill for reconstructing individual diagrams into editable Draw.io files.</h3>
+            <ul>
+              <li><span aria-hidden="true">✓</span> Guided image-to-Draw.io reconstruction workflow</li>
+              <li><span aria-hidden="true">✓</span> Iterative rendering and visual correction</li>
+              <li><span aria-hidden="true">✓</span> Practical, high-fidelity one-off cases</li>
+            </ul>
+            <div class="repo-actions">
+              <a class="button button-dark" href="https://github.com/sxy1499894281/drawio-reconstruction-skill" target="_blank" rel="noreferrer">Open Skill repo <span aria-hidden="true">↗</span></a>
+              <a class="text-link" href="#companion-cases">View companion cases <span aria-hidden="true">↓</span></a>
+            </div>
+          </article>
+        </div>
+
+        <div class="companion-cases" id="companion-cases">
+          <div class="cases-heading reveal">
+            <div>
+              <p class="mini-kicker">Beyond the benchmark</p>
+              <h3>Codex + Skill reconstruction cases</h3>
+            </div>
+            <p>These are companion workflow demonstrations created with Codex and the reconstruction Skill. They are <strong>not</strong> leaderboard samples or benchmark model outputs.</p>
+          </div>
+
+          <div class="case-tabs reveal" data-tab-group="companion-cases-tabs">
+            <div class="tab-list case-tab-list" role="tablist" aria-label="Companion reconstruction cases">
+              <button id="case-tab-lake" role="tab" aria-selected="true" aria-controls="case-panel-lake" tabindex="0" type="button"><span>Case 01</span> Unified data management</button>
+              <button id="case-tab-man" role="tab" aria-selected="false" aria-controls="case-panel-man" tabindex="-1" type="button"><span>Case 02</span> Pipeline optimization</button>
+              <button id="case-tab-sci" role="tab" aria-selected="false" aria-controls="case-panel-sci" tabindex="-1" type="button"><span>Case 03</span> Research workflow</button>
+            </div>
+
+            <article class="tab-panel case-panel" id="case-panel-lake" role="tabpanel" aria-labelledby="case-tab-lake">
+              <div class="case-meta"><span>AI agent architecture</span><span>Editable Draw.io reconstruction</span></div>
+              <div class="case-comparison">
+                <figure>
+                  <figcaption><span>01A</span> Original reference</figcaption>
+                  <button class="image-trigger case-image" type="button" data-lightbox-src="assets/cases/data_lake_original.png" data-lightbox-alt="Original unified data management architecture diagram" data-lightbox-caption="Case 01 · Original reference image.">
+                    <img src="assets/cases/data_lake_original.png" width="1672" height="941" alt="Original unified data management architecture diagram" loading="lazy">
+                    <span class="zoom-label zoom-label-light">Expand <span aria-hidden="true">↗</span></span>
+                  </button>
+                </figure>
+                <figure>
+                  <figcaption><span>01B</span> Reconstructed &amp; editable</figcaption>
+                  <button class="image-trigger case-image" type="button" data-lightbox-src="assets/cases/data_lake_drawio.png" data-lightbox-alt="Editable Draw.io reconstruction of the unified data management architecture diagram" data-lightbox-caption="Case 01 · Editable Draw.io reconstruction produced with Codex and the companion Skill.">
+                    <img src="assets/cases/data_lake_drawio.png" width="1344" height="754" alt="Editable reconstruction of the unified data management architecture diagram" loading="lazy">
+                    <span class="zoom-label zoom-label-light">Expand <span aria-hidden="true">↗</span></span>
+                  </button>
+                </figure>
+              </div>
+            </article>
+
+            <article class="tab-panel case-panel" id="case-panel-man" role="tabpanel" aria-labelledby="case-tab-man" hidden>
+              <div class="case-meta"><span>Data pipeline system</span><span>Editable Draw.io reconstruction</span></div>
+              <div class="case-comparison">
+                <figure>
+                  <figcaption><span>02A</span> Original reference</figcaption>
+                  <button class="image-trigger case-image" type="button" data-lightbox-src="assets/cases/data_man_original.png" data-lightbox-alt="Original data pipeline optimization diagram" data-lightbox-caption="Case 02 · Original reference image.">
+                    <img src="assets/cases/data_man_original.png" width="1820" height="1024" alt="Original data pipeline optimization diagram" loading="lazy">
+                    <span class="zoom-label zoom-label-light">Expand <span aria-hidden="true">↗</span></span>
+                  </button>
+                </figure>
+                <figure>
+                  <figcaption><span>02B</span> Reconstructed &amp; editable</figcaption>
+                  <button class="image-trigger case-image" type="button" data-lightbox-src="assets/cases/data_man_drawio.png" data-lightbox-alt="Editable Draw.io reconstruction of the data pipeline optimization diagram" data-lightbox-caption="Case 02 · Editable Draw.io reconstruction produced with Codex and the companion Skill.">
+                    <img src="assets/cases/data_man_drawio.png" width="1476" height="834" alt="Editable reconstruction of the data pipeline optimization diagram" loading="lazy">
+                    <span class="zoom-label zoom-label-light">Expand <span aria-hidden="true">↗</span></span>
+                  </button>
+                </figure>
+              </div>
+            </article>
+
+            <article class="tab-panel case-panel" id="case-panel-sci" role="tabpanel" aria-labelledby="case-tab-sci" hidden>
+              <div class="case-meta"><span>Scientific research workflow</span><span>Editable Draw.io reconstruction</span></div>
+              <div class="case-comparison">
+                <figure>
+                  <figcaption><span>03A</span> Original reference</figcaption>
+                  <button class="image-trigger case-image" type="button" data-lightbox-src="assets/cases/data_sci2_original.png" data-lightbox-alt="Original scientific research workflow diagram" data-lightbox-caption="Case 03 · Original reference image.">
+                    <img src="assets/cases/data_sci2_original.png" width="1920" height="1080" alt="Original scientific research workflow diagram" loading="lazy">
+                    <span class="zoom-label zoom-label-light">Expand <span aria-hidden="true">↗</span></span>
+                  </button>
+                </figure>
+                <figure>
+                  <figcaption><span>03B</span> Reconstructed &amp; editable</figcaption>
+                  <button class="image-trigger case-image" type="button" data-lightbox-src="assets/cases/data_sci2_drawio.png" data-lightbox-alt="Editable Draw.io reconstruction of the scientific research workflow diagram" data-lightbox-caption="Case 03 · Editable Draw.io reconstruction produced with Codex and the companion Skill.">
+                    <img src="assets/cases/data_sci2_drawio.png" width="1528" height="870" alt="Editable reconstruction of the scientific research workflow diagram" loading="lazy">
+                    <span class="zoom-label zoom-label-light">Expand <span aria-hidden="true">↗</span></span>
+                  </button>
+                </figure>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-limitations" id="limitations">
+      <div class="shell limitations-grid">
+        <div class="limitations-heading reveal">
+          <p class="section-kicker"><span>08</span> Scope &amp; limitations</p>
+          <h2>What VCG-Bench does—and does not—measure.</h2>
+          <p>Clear boundaries make the benchmark easier to interpret and extend.</p>
+        </div>
+        <div class="scope-card scope-in reveal" style="--delay: 80ms;">
+          <span>In scope</span>
+          <ul>
+            <li>Draw.io / mxGraph structured diagrams</li>
+            <li>Executable reconstruction with visual evidence</li>
+            <li>Objective, rule-based incremental edits</li>
+          </ul>
+        </div>
+        <div class="scope-card scope-out reveal" style="--delay: 160ms;">
+          <span>Outside the current scope</span>
+          <ul>
+            <li>Ambiguous intent or subjective redesign</li>
+            <li>Full coverage of rare styles and non-English diagrams</li>
+            <li>Validated deployment or expert-free high-stakes use</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-resources" id="resources">
+      <div class="resource-grid-bg" aria-hidden="true"></div>
+      <div class="shell">
+        <div class="resource-heading reveal">
+          <p class="section-kicker section-kicker-dark"><span>09</span> Resources</p>
+          <h2>Reproduce the benchmark.<br><em>Build on the workflow.</em></h2>
+        </div>
+
+        <div class="resource-link-grid">
+          <a class="resource-link reveal" href="https://arxiv.org/abs/2605.15677" target="_blank" rel="noreferrer"><span>01</span><div><small>Research</small><strong>Paper on arXiv</strong></div><i aria-hidden="true">↗</i></a>
+          <a class="resource-link reveal" style="--delay: 50ms;" href="https://github.com/sxy1499894281/VCG-Bench" target="_blank" rel="noreferrer"><span>02</span><div><small>Research release</small><strong>VCG-Bench repository</strong></div><i aria-hidden="true">↗</i></a>
+          <a class="resource-link reveal" style="--delay: 100ms;" href="https://huggingface.co/datasets/sxy1620348809/VCG-Bench" target="_blank" rel="noreferrer"><span>03</span><div><small>Research release</small><strong>Dataset on Hugging Face</strong></div><i aria-hidden="true">↗</i></a>
+          <a class="resource-link reveal" style="--delay: 150ms;" href="https://github.com/sxy1499894281/VCG-Bench/tree/main/scripts" target="_blank" rel="noreferrer"><span>04</span><div><small>Research release</small><strong>Evaluation scripts</strong></div><i aria-hidden="true">↗</i></a>
+          <a class="resource-link resource-link-accent reveal" style="--delay: 200ms;" href="https://github.com/sxy1499894281/drawio-reconstruction-skill" target="_blank" rel="noreferrer"><span>05</span><div><small>Companion workflow</small><strong>Draw.io reconstruction Skill</strong></div><i aria-hidden="true">↗</i></a>
+        </div>
+
+        <div class="citation-block reveal">
+          <div class="citation-head">
+            <div><p class="mini-kicker">Citation</p><h3>If VCG-Bench helps your research</h3></div>
+            <button class="copy-button" type="button" data-copy-citation><span aria-live="polite">Copy BibTeX</span><i aria-hidden="true">⧉</i></button>
+          </div>
+          <pre id="citation-text"><code>@article{su2026vcgbench,
+  title   = {Towards A Unified Visual-Centric Benchmark for Structured Generation and Editing},
+  author  = {Su, Xiaoyan and Dong, Peijie and Tang, Zhenheng and Tang, Song and Zhai, Yuyao and Lin, Kaitao and Chen, Liang and Gai, Yuhang and Luo, Yuyu and Wang, Qiang and Chu, Xiaowen},
+  journal = {arXiv preprint arXiv:2605.15677},
+  year    = {2026}
+}</code></pre>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="wrap">VCG-Bench, ICML 2026. Structured generation and editing for executable, editable diagrams.</div>
+  <footer class="site-footer">
+    <div class="shell footer-shell">
+      <a class="brand brand-footer" href="#top" aria-label="Back to top">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span>VCG<span class="brand-slash">/</span>Bench</span>
+      </a>
+      <p>Executable diagrams, evaluated as structure.</p>
+      <p>© <span data-year>2026</span> VCG-Bench authors.</p>
+    </div>
   </footer>
 
-  <script>
-    const observer = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-        }
-      }
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
-  </script>
+  <dialog class="lightbox" aria-label="Expanded figure viewer">
+    <div class="lightbox-shell">
+      <div class="lightbox-toolbar">
+        <p data-lightbox-caption></p>
+        <div class="lightbox-view-controls" role="group" aria-label="Image size">
+          <button type="button" data-lightbox-fit aria-pressed="true">Fit</button>
+          <button type="button" data-lightbox-actual aria-pressed="false">100%</button>
+        </div>
+        <button class="lightbox-close" type="button" aria-label="Close expanded figure">Close <span aria-hidden="true">×</span></button>
+      </div>
+      <div class="lightbox-stage">
+        <img alt="">
+      </div>
+    </div>
+  </dialog>
 </body>
 </html>
